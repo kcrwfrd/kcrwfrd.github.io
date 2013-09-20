@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
+    <url>
+        <loc>http://kvcrawford.github.io/blog/2013/09/20/hello-world/</loc>
+        <lastmod>2013-09-20T08:22:27-07:00</lastmod>
+    </url>
+    <url>
+        <loc>http://kvcrawford.github.io/blog/archives/</loc>
+        <lastmod>2013-09-20T08:22:27-07:00</lastmod>
+    </url>
+    <url>
+        <loc>http://kvcrawford.github.io/</loc>
+        <lastmod>2013-09-20T08:22:27-07:00</lastmod>
+    </url>
+    <url>
+        <loc>http://kvcrawford.github.io/robots.txt</loc>
+        <lastmod>2013-09-19T22:02:09-07:00</lastmod>
+    </url>
+</urlset>
