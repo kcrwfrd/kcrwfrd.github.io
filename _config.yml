@@ -67,7 +67,7 @@ github_skip_forks: true
 
 # Twitter
 twitter_user: kvcrawford
-twitter_tweet_button: true
+twitter_tweet_button: false
 
 # Google +1
 google_plus_one: false
