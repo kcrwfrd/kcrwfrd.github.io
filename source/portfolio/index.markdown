@@ -4,7 +4,7 @@ title: "Portfolio"
 date: 2013-09-21 17:20
 comments: false
 sharing: true
-footer: true
+footer: false
 ---
 
 ## MoodApp
