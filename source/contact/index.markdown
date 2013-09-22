@@ -7,9 +7,10 @@ sharing: false
 footer: false
 ---
 
-kvcrawford [at] gmail [dot] com
-https://twitter.com/kvcrawford
-https://github.com/kvcrawford
-https://plus.google.com/100412605131936780000/
-http://www.linkedin.com/in/kvcrawford
-http://instagram.com/kvcrawford #sry #notsry
+## kvcrawford [at] gmail [dot] com
+
+[Github](https://github.com/kvcrawford "kvcrawford")
+[Twitter](https://twitter.com/kvcrawford "@kvcrawford")
+[LinkedIn](http://www.linkedin.com/in/kvcrawford "Kevin Crawford")
+[Google+](https://plus.google.com/u/0/100412605131936780000/about "Kevin Crawford")
+[Instagram](http://instagram.com/kvcrawford "@kvcrawford") #sry #notsry
