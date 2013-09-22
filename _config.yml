@@ -75,8 +75,8 @@ google_plus_one_size: medium
 
 # Google Plus Profile
 # Hidden: No visible button, just add author information to search results
-googleplus_user:
-googleplus_hidden: false
+googleplus_user: 100412605131936780000
+googleplus_hidden: true
 
 # Pinboard
 pinboard_user: kvcrawford
@@ -91,7 +91,7 @@ disqus_short_name: kvcrawford
 disqus_show_comment_count: false
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-44222285-1
 
 # Facebook Like
 facebook_like: false
