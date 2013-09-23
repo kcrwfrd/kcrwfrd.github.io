@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Resum&eacute;"
+title: "R&eacute;sum&eacute;"
 date: 2013-09-22 00:04
 comments: false
 sharing: false
