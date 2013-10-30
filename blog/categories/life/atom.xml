@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Kevin Crawford, Web Developer]]></title>
-  <link href="http://kvcrawford.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Life | Kevin Crawford, Web Developer]]></title>
+  <link href="http://kvcrawford.github.io/blog/categories/life/atom.xml" rel="self"/>
   <link href="http://kvcrawford.github.io/"/>
   <updated>2013-10-30T14:10:08-07:00</updated>
   <id>http://kvcrawford.github.io/</id>
@@ -20,18 +20,7 @@
     <id>http://kvcrawford.github.io/blog/2013/10/09/when-a-fire-starts-to-burn</id>
     <content type="html"><![CDATA[<p>I&#39;ve just been bursting at the seams to post this good news. Today is my first day of work at <a href="http://uchirp.it">Chirp</a>, a social media startup based right here in Long Beach. The team is awesome, and I couldn&#39;t be more excited to learn and grow as a developer, working on something big in the process. Thank you guys for such an amazing opportunity, and thank you to my previous employer, <a href="http://gunnjerkens.com">Gunn/Jerkens</a> &amp; Epraxa, for a wonderful 6.5 years. Here&#39;s to the new road ahead!</p>
 
-<p><img class="center" src="http://distilleryimage4.ak.instagram.com/4f205ba2312211e3a0fd22000aa8039a_8.jpg" title="Chirp HQ" alt="Chirp HQ"></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Hello, World]]></title>
-    <link href="http://kvcrawford.github.io/blog/2013/09/20/hello-world/"/>
-    <updated>2013-09-20T08:21:00-07:00</updated>
-    <id>http://kvcrawford.github.io/blog/2013/09/20/hello-world</id>
-    <content type="html"><![CDATA[<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Well let&#39;s get started then, shall we?&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
+<p><img src="http://distilleryimage4.ak.instagram.com/4f205ba2312211e3a0fd22000aa8039a_8.jpg" title="&quot;Chirp HQ&quot;" ></p>
 ]]></content>
   </entry>
   
