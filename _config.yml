@@ -59,6 +59,10 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 #   3rd Party Settings    #
 # ----------------------- #
 
+# Instagram
+instagram_cache: false
+instagram_cache_dir: '.instagram_cache'
+
 # Github repositories
 github_user: kvcrawford
 github_repo_count: 0
