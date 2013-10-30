@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "A Developer is Born"
+title: "About Me"
 date: 2013-09-22 14:52
 comments: false
 sharing: false
