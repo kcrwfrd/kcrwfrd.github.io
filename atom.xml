@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Crawford, Web Developer]]></title>
   <link href="http://kvcrawford.github.io/atom.xml" rel="self"/>
   <link href="http://kvcrawford.github.io/"/>
-  <updated>2013-10-30T14:10:08-07:00</updated>
+  <updated>2013-10-30T15:28:25-07:00</updated>
   <id>http://kvcrawford.github.io/</id>
   <author>
     <name><![CDATA[Kevin Crawford]]></name>
@@ -12,6 +12,31 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Cloning an existing installation of Octopress]]></title>
+    <link href="http://kvcrawford.github.io/blog/2013/10/30/cloning-an-existing-installation-of-octopress/"/>
+    <updated>2013-10-30T14:16:00-07:00</updated>
+    <id>http://kvcrawford.github.io/blog/2013/10/30/cloning-an-existing-installation-of-octopress</id>
+    <content type="html"><![CDATA[<p>The way Octopress deploys to Github Pages is a little funky. When you setup your blog for deployment to Github Pages, a second copy of the repo is instantiated in <code>./_deploy</code>, and is checked out to the <code>master</code> branch.</p>
+
+<p>You create and edit posts in the <code>source</code> branch, in your project root. During deployment, your site gets generated, and the updates copied to <code>_deploy</code>. From there, a commit is made to <code>master</code>, and a git push is performed, updating the website.</p>
+
+<p>When you clone your blog to a different computer, you need to make sure it is setup in the same way, like so:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Assuming that you have your Ruby environment configured</span>
+</span><span class='line'><span class="nv">$ </span>git clone -b <span class="nb">source </span>git@github.com:username/username.github.io.git username.github.io
+</span><span class='line'><span class="nv">$ </span><span class="nb">cd </span>username.github.io
+</span><span class='line'><span class="nv">$ </span>git clone -b master git@github.com:username/username.github.io.git _deploy
+</span><span class='line'><span class="nv">$ </span>bundle install
+</span></code></pre></td></tr></table></div></figure>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[When a Fire Starts to Burn]]></title>

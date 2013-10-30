@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Crawford">
 
   
-  <meta name="description" content="I&#39;ve just been bursting at the seams to post this good news. Today is my first day of work at Chirp, a social media startup based right here in &hellip;">
+  <meta name="description" content="The way Octopress deploys to Github Pages is a little funky. When you setup your blog for deployment to Github Pages, a second copy of the repo is &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,58 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/10/30/cloning-an-existing-installation-of-octopress/">Cloning an Existing Installation of Octopress</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-30T14:16:00-07:00" pubdate data-updated="true">Oct 30<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The way Octopress deploys to Github Pages is a little funky. When you setup your blog for deployment to Github Pages, a second copy of the repo is instantiated in <code>./_deploy</code>, and is checked out to the <code>master</code> branch.</p>
+
+<p>You create and edit posts in the <code>source</code> branch, in your project root. During deployment, your site gets generated, and the updates copied to <code>_deploy</code>. From there, a commit is made to <code>master</code>, and a git push is performed, updating the website.</p>
+
+<p>When you clone your blog to a different computer, you need to make sure it is setup in the same way, like so:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Assuming that you have your Ruby environment configured</span>
+</span><span class='line'><span class="nv">$ </span>git clone -b <span class="nb">source </span>git@github.com:username/username.github.io.git username.github.io
+</span><span class='line'><span class="nv">$ </span><span class="nb">cd </span>username.github.io
+</span><span class='line'><span class="nv">$ </span>git clone -b master git@github.com:username/username.github.io.git _deploy
+</span><span class='line'><span class="nv">$ </span>bundle install
+</span></code></pre></td></tr></table></div></figure>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -169,6 +221,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/10/30/cloning-an-existing-installation-of-octopress/">Cloning an Existing Installation of Octopress</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/10/09/when-a-fire-starts-to-burn/">When a Fire Starts to Burn</a>
@@ -262,7 +318,7 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>

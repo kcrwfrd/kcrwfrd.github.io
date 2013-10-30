@@ -1,4 +1,4 @@
 User-agent: *
-Disallow: /
+Disallow: 
 
-Sitemap: http://kvcrawford.github.io/sitemap.xml
+Sitemap: http://kvcrawford.github.io/sitemap.xml 

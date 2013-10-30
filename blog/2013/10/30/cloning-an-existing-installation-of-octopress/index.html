@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>R&eacute;sum&eacute; - Kevin Crawford, Web Developer</title>
+  <title>Cloning an existing installation of Octopress - Kevin Crawford, Web Developer</title>
   <meta name="author" content="Kevin Crawford">
 
   
-  <meta name="description" content="R&eacute;sum&eacute; Sep 22nd, 2013 kvcrawford [at] gmail [dot] com Objective To work with a talented team who challenges and inspires me to grow &hellip;">
+  <meta name="description" content="The way Octopress deploys to Github Pages is a little funky. When you setup your blog for deployment to Github Pages, a second copy of the repo is &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://kvcrawford.github.io/resume">
+  <link rel="canonical" href="http://kvcrawford.github.io/blog/2013/10/30/cloning-an-existing-installation-of-octopress">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Kevin Crawford, Web Developer" type="application/atom+xml">
@@ -80,11 +80,15 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">R&eacute;sum&eacute;</h1>
-    <p class="meta">
+    
+      <h1 class="entry-title">Cloning an Existing Installation of Octopress</h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -96,99 +100,79 @@
   
 
 
-<time datetime="2013-09-22T00:04:00-07:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2013</time></p>
+<time datetime="2013-10-30T14:16:00-07:00" pubdate data-updated="true">Oct 30<span>th</span>, 2013</time>
+        
+      </p>
+    
   </header>
+
+
+<div class="entry-content"><p>The way Octopress deploys to Github Pages is a little funky. When you setup your blog for deployment to Github Pages, a second copy of the repo is instantiated in <code>./_deploy</code>, and is checked out to the <code>master</code> branch.</p>
+
+<p>You create and edit posts in the <code>source</code> branch, in your project root. During deployment, your site gets generated, and the updates copied to <code>_deploy</code>. From there, a commit is made to <code>master</code>, and a git push is performed, updating the website.</p>
+
+<p>When you clone your blog to a different computer, you need to make sure it is setup in the same way, like so:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Assuming that you have your Ruby environment configured</span>
+</span><span class='line'><span class="nv">$ </span>git clone -b <span class="nb">source </span>git@github.com:username/username.github.io.git username.github.io
+</span><span class='line'><span class="nv">$ </span><span class="nb">cd </span>username.github.io
+</span><span class='line'><span class="nv">$ </span>git clone -b master git@github.com:username/username.github.io.git _deploy
+</span><span class='line'><span class="nv">$ </span>bundle install
+</span></code></pre></td></tr></table></div></figure>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <p>kvcrawford [at] gmail [dot] com</p>
 
-<h2 id="toc_0">Objective</h2>
+<span class="byline author vcard">Posted by <span class="fn">Kevin Crawford</span></span>
 
-<p>To work with a talented team who challenges and inspires me to grow into an adept UX Engineer. I want to make peoples&#39; lives easier, through code.</p>
+      
 
-<h2 id="toc_1">Experience</h2>
 
-<h3 id="toc_2">Gunn/Jerkens</h3>
 
-<p><strong>Lead Front-End Web Developer</strong>, January 2012 - Present<br>
-<strong>Front-End Web Developer</strong>, June 2011 - December 2011</p>
 
-<p>A typical project involves collaborating with graphic designers on UX and interaction design, and then following up with implementation. Collaboration with other developers is facilitated by Git and established deployment methodologies.</p>
 
-<p>Everyday technology used includes PHP, HTML5, CSS3, SASS/Compass, Javascript, jQuery, Git, and (sigh) Wordpress.</p>
 
-<h4 id="toc_3">Accomplishments</h4>
 
-<ul>
-<li>Introduced and implemented open source software for the centralized processing and collection of user registrations</li>
-<li>Carried workload through severe resource shortage Fall 2012, never missing a deadline</li>
-<li>Designed and developed tools for the automation of project initialization</li>
-<li>Pitched and started product development initiatives</li>
-<li>Most proud of attracting and building a highly talented development team, early 2013</li>
-</ul>
-
-<h3 id="toc_4">Epraxa</h3>
-
-<p><strong>Sole Developer</strong>, February 2009 - June 2011<br>
-<strong>Jr. Front-End Web Developer</strong>, June 2007 - February 2009</p>
-
-<p>At Epraxa, we subcontracted with ad agencies who lacked their own development teams, making B2C brochure-type websites principally for the homebuilding industry. In June 2011, we merged with our client, Gunn/Jerkens.</p>
-
-<h3 id="toc_5">Freelance</h3>
-
-<p><strong>Front-End Web Developer</strong>, July 2006 - Spring 2009</p>
-
-<p>Favorite project involved implementation of film asset tracking system for TakePart.com, Participant Media&#39;s social action network.</p>
-
-<h3 id="toc_6">Personal Projects</h3>
-
-<h4 id="toc_7">Mood App</h4>
-
-<p>Application for tracking mood and other user-defined metrics (for example, sleep, exercise, etc.). Useful for establishing habits and patterns that are conducive to happiness and productivity. Co-designed and developed with Andrew Kostka. See <a href="https://github.com/kvcrawford/moodapp">https://github.com/kvcrawford/moodapp</a></p>
-
-<h2 id="toc_8">Professional Interests</h2>
-
-<ul>
-<li>Open source software</li>
-<li>User experience</li>
-<li>Eliminating barriers</li>
-<li>Automation, efficiency</li>
-<li>Pair programming</li>
-<li>Hacker News</li>
-<li>Startup culture, entrepreneurship</li>
-<li>Using a CLI for <em>everything</em> (well, as much as possible)</li>
-<li>Linux, Command-line, bash</li>
-<li>Freenode IRC</li>
-<li>Stackoverflow</li>
-<li>Git, Github (!!!)</li>
-</ul>
-
-<h2 id="toc_9">Personal Interests</h2>
-
-<ul>
-<li>Music</li>
-<li>Food, cooking, and fitness to achieve health, clarity, and maximum mental capacity</li>
-<li>Code—it&#39;s not just a professional thing</li>
-</ul>
-
-<h2 id="toc_10">References</h2>
-
-<h3 id="toc_11">John Grefe</h3>
-
-<p><a href="https://twitter.com/JohnGrefe">@JohnGrefe</a> &raquo; CEO <a href="http://www.thewaypoint.com">TheWaypoint.com</a>, Long Beach Tech board member, local tech community leader</p>
-
-<h3 id="toc_12">Andrew Kostka</h3>
-
-<p><a href="https://github.com/apkostka">@apkostka</a> &raquo; Co-developer at Gunn/Jerkens, a talented man destined for great things</p>
-
-<h2 id="toc_13">Find Me Online</h2>
-
-<p><a href="http://kvcrawford.com">http://kvcrawford.com</a><br>
-<a href="https://github.com/kvcrawford">https://github.com/kvcrawford</a><br>
-<a href="http://careers.stackoverflow.com/kvcrawford">http://careers.stackoverflow.com/kvcrawford</a><br>
-<a href="https://twitter.com/kvcrawford">https://twitter.com/kvcrawford</a></p>
 
   
+
+
+<time datetime="2013-10-30T14:16:00-07:00" pubdate data-updated="true">Oct 30<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/10/09/when-a-fire-starts-to-burn/" title="Previous Post: When a Fire Starts to Burn">&laquo; When a Fire Starts to Burn</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -286,6 +270,22 @@
 
 </footer>
   
+
+<script type="text/javascript">
+      var disqus_shortname = 'kvcrawford';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://kvcrawford.github.io/blog/2013/10/30/cloning-an-existing-installation-of-octopress/';
+        var disqus_url = 'http://kvcrawford.github.io/blog/2013/10/30/cloning-an-existing-installation-of-octopress/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
 
 
 
