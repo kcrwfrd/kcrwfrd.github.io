@@ -19,3 +19,5 @@ $ cd username.github.io
 $ git clone -b master git@github.com:username/username.github.io.git _deploy
 $ bundle install
 ```
+
+Thank you to [zerosharp.com](http://blog.zerosharp.com/clone-your-octopress-to-blog-from-two-places/) and [dblock.org](http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one) for helping me figure that one out.
