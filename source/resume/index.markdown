@@ -12,26 +12,28 @@ kvcrawford [at] gmail [dot] com
 ## Objective
 To work with a talented team who challenges and inspires me to grow into an adept UX Engineer. I want to make peoples' lives easier, through code.
 
-
 ## Experience
 
-### Gunn/Jerkens
-__Lead Front-End Web Developer__, January 2012 - Present
+### Chirp
+__Front-End Engineer__, October 2013 - Present
+
+Responsible for the development of a thick-client web app built on AngularJS, served by a Node.js middle layer, interfacing with a back-end REST API.
+
+### Gunn/Jerkens Marketing &amp; Communications
+__Lead Front-End Web Developer__, January 2012 - October 2013
 __Front-End Web Developer__, June 2011 - December 2011
 
-A typical project involves collaborating with graphic designers on UX and interaction design, and then following up with implementation. Collaboration with other developers is facilitated by Git and established deployment methodologies.
-
-Everyday technology used includes PHP, HTML5, CSS3, SASS/Compass, Javascript, jQuery, Git, and (sigh) Wordpress.
+Lead a team of developers, working together to develop tools and processes to rapidly develop websites for our clients. Everyday technology used included PHP, HTML5, CSS3, SASS/Compass, Javascript, jQuery, Git, and (sigh) Wordpress.
 
 #### Accomplishments
-* Introduced and implemented open source software for the centralized processing and collection of user registrations
-* Carried workload through severe resource shortage Fall 2012, never missing a deadline
 * Designed and developed tools for the automation of project initialization
+* Introduced and implemented open source software for the centralized processing and collection of user registrations
+* Met deadlines in spite of severe resource shortages, maintaining a consistent level of service to our clients
 * Pitched and started product development initiatives
-* Most proud of attracting and building a highly talented development team, early 2013
+* Most proud of instilling a strong developer culture that attracted a top-notch team
 
 ### Epraxa
-__Sole Developer__, February 2009 - June 2011
+__Front-End Web Developer__, February 2009 - June 2011
 __Jr. Front-End Web Developer__, June 2007 - February 2009
 
 At Epraxa, we subcontracted with ad agencies who lacked their own development teams, making B2C brochure-type websites principally for the homebuilding industry. In June 2011, we merged with our client, Gunn/Jerkens.
@@ -80,7 +82,6 @@ Application for tracking mood and other user-defined metrics (for example, sleep
 
 
 ## Find Me Online
-http://kvcrawford.com
 https://github.com/kvcrawford
 http://careers.stackoverflow.com/kvcrawford
 https://twitter.com/kvcrawford
