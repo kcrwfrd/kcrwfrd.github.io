@@ -163,6 +163,9 @@ env APPLICATION_DIRECTORY="/home/ubuntu/myapp"
 # Application javascript filename
 env APPLICATION_START="server.js"
 
+# Environment to run app as
+env NODE_ENV="production"
+
 # Log file
 env LOG="/var/log/chirp.log"
 
