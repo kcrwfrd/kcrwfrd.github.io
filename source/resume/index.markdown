@@ -47,8 +47,18 @@ Favorite project involved implementation of film asset tracking system for TakeP
 ### Personal Projects
 
 #### Mood App
-Application for tracking mood and other user-defined metrics (for example, sleep, exercise, etc.). Useful for establishing habits and patterns that are conducive to happiness and productivity. Co-designed and developed with Andrew Kostka. See https://github.com/kvcrawford/moodapp
+Application for tracking mood and other user-defined metrics (for example, sleep, exercise, etc.). Useful for establishing habits and patterns that are conducive to happiness and productivity. Co-designed and developed with Andrew Kostka. See https://github.com/kvcrawford/moodapp.
 
+
+## References
+
+### John Grefe
+[@JohnGrefe](https://twitter.com/JohnGrefe) &raquo; Co-founder of [The Waypoint](http://www.thewaypoint.com) and [Congrevape](http://congrevape.com/). Long Beach Tech board member, local tech community leader.
+
+### Andrew Kostka
+[@apkostka](https://github.com/apkostka) &raquo; Co-developer at Gunn/Jerkens, a talented man destined for great things.
+
+Please contact me for additional contact information.
 
 ## Professional Interests
 
@@ -63,22 +73,16 @@ Application for tracking mood and other user-defined metrics (for example, sleep
 * Linux, Command-line, bash
 * Freenode IRC
 * Stackoverflow
-* Git, Github (!!!)
+* Git, Github
 
 
 ## Personal Interests
 * Music
-* Food, cooking, and fitness to achieve health, clarity, and maximum mental capacity
+* Hiking
+* Cooking
+* Fitness
+* Lifehacking to achieve maximum health, clarity, and mental capacity
 * Code—it's not just a professional thing
-
-
-## References
-
-### John Grefe
-[@JohnGrefe](https://twitter.com/JohnGrefe) &raquo; CEO [TheWaypoint.com](http://www.thewaypoint.com), Long Beach Tech board member, local tech community leader
-
-### Andrew Kostka
-[@apkostka](https://github.com/apkostka) &raquo; Co-developer at Gunn/Jerkens, a talented man destined for great things
 
 
 ## Find Me Online
