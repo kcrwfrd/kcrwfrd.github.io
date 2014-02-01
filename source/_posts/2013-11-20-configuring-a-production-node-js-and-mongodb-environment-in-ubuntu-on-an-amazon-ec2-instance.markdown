@@ -6,9 +6,11 @@ comments: true
 categories: [nodejs mongodb aws ubuntu servers]
 ---
 
-This tutorial will cover launching an EC2 instance, setting up the Node.js/MongoDB stack, and keeping your app running as a service so that it is resilient to failure. Most everything is taken directly from the official documentation for the various packages, and I included links. That way you can refer to the tutorial as a general guide, and still use official documentation to get into the nitty-gritty.
+This tutorial will cover launching an EC2 instance, setting up the Node.js/MongoDB stack, and keeping your app running as a service so that it is resilient to failure. Most everything is taken directly from the official documentation for the various packages, and I included links. That way you can refer to the tutorial as a general guide, and still use official documentation to get into the nitty-gritty details.
 
 Right, then. Let's get started!
+
+<!-- more -->
 
 ## First, a Note About Keypairs
 When you launch a new instance, it's pretty funky that Amazon doesn't let you paste or upload your public key to use for authentication. You can either generate a new private key to download, or select an existing key from your account. I recommend that you upload your public key beforehand, by going to the __AWS Console -> EC2 -> Key Pairs -> Import Key Pair__.
@@ -191,6 +193,6 @@ sudo service myapp stop
 ```
 
 ## Ta-Da!
-Now you're ready to rock'n'roll, and figure out a deployment methodology. Perhaps I'll cover a build/deployment methodology for a MEAN (Mongo, Express, Angular, Node.js) stack app next?
+Now your environment is ready to rock'n'roll—you just need to figure out a deployment methodology. Perhaps I'll cover an automated build/deployment process for a <abbr title="Mongo, Express, Angular, Node.js">MEAN</abbr> stack app next?
 
 Post a comment if you have any questions, and I'll be happy to do what I can to help.
