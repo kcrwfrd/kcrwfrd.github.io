@@ -1,26 +1,25 @@
 ---
 layout: post
-title: "Deploying a Production App on Node.js and MongoDB to an Amazon EC2 Instance on Ubuntu"
+title: "Configuring a Production Node.js and MongoDB Environment in Ubuntu on an Amazon EC2 Instance"
 date: 2013-11-20 11:02
 comments: true
 categories: [nodejs mongodb aws ubuntu servers]
-published: false
 ---
 
-This tutorial will be a two-part series. First, we'll cover launching an EC2 instance, setting up the Node.js/MongoDB stack, and keeping your app running. The next part will focus on build and deployment methodologies, specifically for a JS-heavy thick client built on a framework like Angular/Backbone/Ember/\<insert framework here\>.
+This tutorial will cover launching an EC2 instance, setting up the Node.js/MongoDB stack, and keeping your app running as a service so that it is resilient to failure. Most everything is taken directly from the official documentation for the various packages, and I included links. That way you can refer to the tutorial as a general guide, and still use official documentation to get into the nitty-gritty.
 
-# Part 1: Setup Your Stack
+Right, then. Let's get started!
 
 ## First, a Note About Keypairs
 When you launch a new instance, it's pretty funky that Amazon doesn't let you paste or upload your public key to use for authentication. You can either generate a new private key to download, or select an existing key from your account. I recommend that you upload your public key beforehand, by going to the __AWS Console -> EC2 -> Key Pairs -> Import Key Pair__.
 
-You can also upload a public key via the command line, with [ec2-import-keypair](http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-ImportKeyPair.html). I installed [aws-cli](https://github.com/aws/aws-cli) (note: different from `ec2-import-keypair`) and issued the following command:
+You can also upload a public key via the command line, with [ec2-import-keypair](http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-ImportKeyPair.html). I installed [aws-cli](https://github.com/aws/aws-cli) (note: slightly different from `ec2-import-keypair`) and issued the following command:
 
 ```bash
 aws ec2 import-key-pair --key-name user@email.com --public-key-material file://~/.ssh/id_rsa.pub
 ```
 
-If you do this beforehand, your key will show up in the web interface for you to select when launching.
+If you do this beforehand, your key will show up in the web interface for you to select when launching. Of course, you don't have to do this. It's just me being pedantic :P
 
 ## Provision your EC2 instance
 I chose Ubuntu Server 13.10 for my AMI. You'll want to use 64-bit for optimal MongoDB support (see [this post](http://blog.mongodb.org/post/137788967/32-bit-limitations)). Make sure to read through all the options in the wizard to configure your instance for your needs. [MongoDB recommends](http://docs.mongodb.org/ecosystem/platforms/amazon-ec2/) an [instance type](https://aws.amazon.com/ec2/instance-types/) that is EBS-optimized. More on that shortly.
@@ -190,3 +189,8 @@ sudo service myapp start
 sudo service myapp restart
 sudo service myapp stop
 ```
+
+## Ta-Da!
+Now you're ready to rock'n'roll, and figure out a deployment methodology. Perhaps I'll cover a build/deployment methodology for a MEAN (Mongo, Express, Angular, Node.js) stack app next?
+
+Post a comment if you have any questions, and I'll be happy to do what I can to help.
