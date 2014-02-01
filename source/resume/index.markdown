@@ -23,20 +23,19 @@ Responsible for the development of a thick-client web app built on AngularJS, se
 __Lead Front-End Web Developer__, January 2012 - October 2013
 __Front-End Web Developer__, June 2011 - December 2011
 
-Lead a team of developers, working together to develop tools and processes to rapidly develop websites for our clients. Everyday technology used included PHP, HTML5, CSS3, SASS/Compass, Javascript, jQuery, Git, and Wordpress.
+My primary role at Gunn/Jerkens was to develop CMS-driven B2C brochure-type websites for our clients, typically from the homebuilding industry.
 
-#### Accomplishments
-* Designed and developed tools for the automation of project initialization
-* Introduced and implemented open source software for the centralized processing and collection of user registrations
-* Met deadlines in spite of severe resource shortages, maintaining a consistent level of service to our clients
-* Pitched and started product development initiatives
-* Most proud of instilling a strong developer culture that attracted a top-notch team
+One of my most significant impacts, and easily my most rewarding, was building a development team from the ground up. By instilling a strong developer culture, I was able to build an exceptionally talented and productive team, ignited by the passion and intellectual curiosity of its members.
+
+Together, we designed and developed tools for the automation of project boilerplate, shortening turn-around times and increasing profit margins. When a problem got tough, pair programming made quick work of it. We organized meetups, and pitched well-received product development initiatives company-wide.
+
+Everyday technology used included PHP, HTML5, CSS3, SASS/Compass, Javascript, jQuery, Git, and Wordpress.
 
 ### Epraxa
 __Front-End Web Developer__, February 2009 - June 2011
 __Jr. Front-End Web Developer__, June 2007 - February 2009
 
-At Epraxa, we subcontracted with ad agencies who lacked their own development teams, making B2C brochure-type websites principally for the homebuilding industry. In June 2011, we merged with our client, Gunn/Jerkens.
+At Epraxa, we subcontracted with ad agencies who lacked their own development teams, making B2C brochure-type websites principally for the homebuilding industry. From February 2009 onwards, I was the only developer on the team. In June 2011, we merged with our client, Gunn/Jerkens.
 
 ### Freelance
 __Front-End Web Developer__, July 2006 - Spring 2009
