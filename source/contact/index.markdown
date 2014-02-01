@@ -13,4 +13,4 @@ footer: false
 [Twitter](https://twitter.com/kvcrawford "@kvcrawford")
 [LinkedIn](http://www.linkedin.com/in/kvcrawford "Kevin Crawford")
 [Google+](https://plus.google.com/u/0/100412605131936780000/about "Kevin Crawford")
-[Instagram](http://instagram.com/kvcrawford "@kvcrawford") #sry #notsry
+[Instagram](http://instagram.com/kvcrawford "#sry #notsry")
