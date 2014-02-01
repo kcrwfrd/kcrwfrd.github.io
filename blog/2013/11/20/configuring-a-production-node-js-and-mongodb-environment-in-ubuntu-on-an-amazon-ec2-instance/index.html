@@ -1,24 +1,113 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Kevin Crawford, Web Developer]]></title>
-  <link href="http://kvcrawford.github.io/atom.xml" rel="self"/>
-  <link href="http://kvcrawford.github.io/"/>
-  <updated>2014-01-31T20:16:43-08:00</updated>
-  <id>http://kvcrawford.github.io/</id>
-  <author>
-    <name><![CDATA[Kevin Crawford]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Configuring a Production Node.js and MongoDB Environment in Ubuntu on an Amazon EC2 Instance - Kevin Crawford, Web Developer</title>
+  <meta name="author" content="Kevin Crawford">
 
   
-  <entry>
-    <title type="html"><![CDATA[Configuring a Production Node.js and MongoDB Environment in Ubuntu on an Amazon EC2 Instance]]></title>
-    <link href="http://kvcrawford.github.io/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance/"/>
-    <updated>2013-11-20T11:02:00-08:00</updated>
-    <id>http://kvcrawford.github.io/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance</id>
-    <content type="html"><![CDATA[<p>This tutorial will cover launching an EC2 instance, setting up the Node.js/MongoDB stack, and keeping your app running as a service so that it is resilient to failure. Most everything is taken directly from the official documentation for the various packages, and I included links. That way you can refer to the tutorial as a general guide, and still use official documentation to get into the nitty-gritty details.</p>
+  <meta name="description" content="This tutorial will cover launching an EC2 instance, setting up the Node.js/MongoDB stack, and keeping your app running as a service so that it is &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://kvcrawford.github.io/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Kevin Crawford, Web Developer" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-44222285-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Kevin Crawford, Web Developer</a></h1>
+  
+    <h2>Tales from the lab of a growing full-stack UX engineer from Long Beach, California.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:kvcrawford.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/portfolio">Portfolio</a></li>
+  <li><a href="/resume">R&eacute;sum&eacute;</a></li>
+  <li><a href="/contact">Contact</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Configuring a Production Node.js and MongoDB Environment in Ubuntu on an Amazon EC2 Instance</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-20T11:02:00-08:00" pubdate data-updated="true">Nov 20<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This tutorial will cover launching an EC2 instance, setting up the Node.js/MongoDB stack, and keeping your app running as a service so that it is resilient to failure. Most everything is taken directly from the official documentation for the various packages, and I included links. That way you can refer to the tutorial as a general guide, and still use official documentation to get into the nitty-gritty details.</p>
 
 <p>Right, then. Let&#39;s get started!</p>
 
@@ -295,56 +384,188 @@
 <p>Now your environment is ready to rock&#39;n&#39;roll—you just need to figure out a deployment methodology. Perhaps I&#39;ll cover an automated build/deployment process for a <abbr title="Mongo, Express, Angular, Node.js">MEAN</abbr> stack app next?</p>
 
 <p>Post a comment if you have any questions, and I&#39;ll be happy to do what I can to help.</p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    <title type="html"><![CDATA[Cloning an existing installation of Octopress]]></title>
-    <link href="http://kvcrawford.github.io/blog/2013/10/30/cloning-an-existing-installation-of-octopress/"/>
-    <updated>2013-10-30T14:16:00-07:00</updated>
-    <id>http://kvcrawford.github.io/blog/2013/10/30/cloning-an-existing-installation-of-octopress</id>
-    <content type="html"><![CDATA[<p>The way Octopress deploys to Github Pages is a little funky. When you setup your blog for deployment to Github Pages, a second copy of the repo is instantiated in <code>./_deploy</code>, and is checked out to the <code>master</code> branch.</p>
 
-<p>You create and edit posts in the <code>source</code> branch, in your project root. During deployment, your site gets generated, and the updates copied to <code>_deploy</code>. From there, a commit is made to <code>master</code>, and a git push is performed, updating the website.</p>
+<span class="byline author vcard">Posted by <span class="fn">Kevin Crawford</span></span>
 
-<p>When you clone your blog to a different computer, you need to make sure it is setup in the same way, like so:</p>
+      
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Assuming that you have your Ruby environment configured</span>
-</span><span class='line'><span class="nv">$ </span>git clone -b <span class="nb">source </span>git@github.com:username/username.github.io.git username.github.io
-</span><span class='line'><span class="nv">$ </span><span class="nb">cd </span>username.github.io
-</span><span class='line'><span class="nv">$ </span>git clone -b master git@github.com:username/username.github.io.git _deploy
-</span><span class='line'><span class="nv">$ </span>bundle install
-</span></code></pre></td></tr></table></div></figure>
 
-<p>Thank you to <a href="http://blog.zerosharp.com/clone-your-octopress-to-blog-from-two-places/">zerosharp.com</a> and <a href="http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one">dblock.org</a> for helping me figure that one out.</p>
-]]></content>
-  </entry>
+
+
+
+
+
+
   
-  <entry>
-    <title type="html"><![CDATA[When a Fire Starts to Burn]]></title>
-    <link href="http://kvcrawford.github.io/blog/2013/10/09/when-a-fire-starts-to-burn/"/>
-    <updated>2013-10-09T13:40:00-07:00</updated>
-    <id>http://kvcrawford.github.io/blog/2013/10/09/when-a-fire-starts-to-burn</id>
-    <content type="html"><![CDATA[<p>I&#39;ve just been bursting at the seams to post this good news. Today is my first day of work at <a href="http://uchirp.it">Chirp</a>, a social media startup based right here in Long Beach. The team is awesome, and I couldn&#39;t be more excited to learn and grow as a developer, working on something big in the process. Thank you guys for such an amazing opportunity, and thank you to my previous employer, <a href="http://gunnjerkens.com">Gunn/Jerkens</a> &amp; Epraxa, for a wonderful 6.5 years. Here&#39;s to the new road ahead!</p>
 
-<p><img class="center" src="http://distilleryimage4.ak.instagram.com/4f205ba2312211e3a0fd22000aa8039a_8.jpg" title="Chirp HQ" alt="Chirp HQ"></p>
-]]></content>
-  </entry>
+
+<time datetime="2013-11-20T11:02:00-08:00" pubdate data-updated="true">Nov 20<span>th</span>, 2013</time>
+      
+
+<span class="categories">
   
-  <entry>
-    <title type="html"><![CDATA[Hello, World]]></title>
-    <link href="http://kvcrawford.github.io/blog/2013/09/20/hello-world/"/>
-    <updated>2013-09-20T08:21:00-07:00</updated>
-    <id>http://kvcrawford.github.io/blog/2013/09/20/hello-world</id>
-    <content type="html"><![CDATA[<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Well let&#39;s get started then, shall we?&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-]]></content>
-  </entry>
+    <a class='category' href='/blog/categories/nodejs-mongodb-aws-ubuntu-servers/'>nodejs mongodb aws ubuntu servers</a>
   
-</feed>
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/10/30/cloning-an-existing-installation-of-octopress/" title="Previous Post: Cloning an existing installation of Octopress">&laquo; Cloning an existing installation of Octopress</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance/">Configuring a Production Node.js and MongoDB Environment in Ubuntu on an Amazon EC2 Instance</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/30/cloning-an-existing-installation-of-octopress/">Cloning an Existing Installation of Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/09/when-a-fire-starts-to-burn/">When a Fire Starts to Burn</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/20/hello-world/">Hello, World</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/kvcrawford">@kvcrawford</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'kvcrawford',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>My Pinboard</h1>
+  <ul id="pinboard_linkroll">Fetching linkroll...</ul>
+  <p><a href="http://pinboard.in/u:kvcrawford">My Pinboard Bookmarks &raquo;</a></p>
+</section>
+<script type="text/javascript">
+  var linkroll = 'pinboard_linkroll'; //id target for pinboard list
+  var pinboard_user = "kvcrawford"; //id target for pinboard list
+  var pinboard_count = 3; //id target for pinboard list
+  (function(){
+    var pinboardInit = document.createElement('script');
+    pinboardInit.type = 'text/javascript';
+    pinboardInit.async = true;
+    pinboardInit.src = '/javascripts/pinboard.js';
+    document.getElementsByTagName('head')[0].appendChild(pinboardInit);
+  })();
+</script>
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/100412605131936780000?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Kevin Crawford -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'kvcrawford';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://kvcrawford.github.io/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance/';
+        var disqus_url = 'http://kvcrawford.github.io/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

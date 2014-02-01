@@ -15,12 +15,18 @@
         <lastmod>2013-11-21T22:11:17-08:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://kvcrawford.github.io/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance/
+        </loc>
+        <lastmod>2014-01-31T20:14:27-08:00</lastmod>
+    </url>
+    <url>
         <loc>http://kvcrawford.github.io/about/</loc>
         <lastmod>2013-11-21T22:11:17-08:00</lastmod>
     </url>
     <url>
         <loc>http://kvcrawford.github.io/blog/archives/</loc>
-        <lastmod>2013-11-21T22:11:17-08:00</lastmod>
+        <lastmod>2014-01-31T20:14:27-08:00</lastmod>
     </url>
     <url>
         <loc>http://kvcrawford.github.io/contact/</loc>
@@ -28,7 +34,7 @@
     </url>
     <url>
         <loc>http://kvcrawford.github.io/</loc>
-        <lastmod>2013-11-21T22:11:17-08:00</lastmod>
+        <lastmod>2014-01-31T20:14:27-08:00</lastmod>
     </url>
     <url>
         <loc>http://kvcrawford.github.io/portfolio/</loc>

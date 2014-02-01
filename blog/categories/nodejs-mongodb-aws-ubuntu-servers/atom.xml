@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: nodejs mongodb aws ubuntu servers | Kevin Crawford, Web Developer]]></title>
+  <link href="http://kvcrawford.github.io/blog/categories/nodejs-mongodb-aws-ubuntu-servers/atom.xml" rel="self"/>
+  <link href="http://kvcrawford.github.io/"/>
+  <updated>2014-01-31T20:16:43-08:00</updated>
+  <id>http://kvcrawford.github.io/</id>
+  <author>
+    <name><![CDATA[Kevin Crawford]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Configuring a Production Node.js and MongoDB Environment in Ubuntu on an Amazon EC2 Instance]]></title>
+    <link href="http://kvcrawford.github.io/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance/"/>
+    <updated>2013-11-20T11:02:00-08:00</updated>
+    <id>http://kvcrawford.github.io/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance</id>
+    <content type="html"><![CDATA[<p>This tutorial will cover launching an EC2 instance, setting up the Node.js/MongoDB stack, and keeping your app running as a service so that it is resilient to failure. Most everything is taken directly from the official documentation for the various packages, and I included links. That way you can refer to the tutorial as a general guide, and still use official documentation to get into the nitty-gritty details.</p>
+
+<p>Right, then. Let&#39;s get started!</p>
+
+<!-- more -->
+
+<h2 id="toc_0">First, a Note About Keypairs</h2>
+
+<p>When you launch a new instance, it&#39;s pretty funky that Amazon doesn&#39;t let you paste or upload your public key to use for authentication. You can either generate a new private key to download, or select an existing key from your account. I recommend that you upload your public key beforehand, by going to the <strong>AWS Console -> EC2 -> Key Pairs -> Import Key Pair</strong>.</p>
+
+<p>You can also upload a public key via the command line, with <a href="http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-ImportKeyPair.html">ec2-import-keypair</a>. I installed <a href="https://github.com/aws/aws-cli">aws-cli</a> (note: slightly different from <code>ec2-import-keypair</code>) and issued the following command:</p>
+<div class="highlight"><pre><code class="bash">aws ec2 import-key-pair --key-name user@email.com --public-key-material file://~/.ssh/id_rsa.pub
+</code></pre></div>
+<p>If you do this beforehand, your key will show up in the web interface for you to select when launching. Of course, you don&#39;t have to do this. It&#39;s just me being pedantic :P</p>
+
+<h2 id="toc_1">Provision your EC2 instance</h2>
+
+<p>I chose Ubuntu Server 13.10 for my AMI. You&#39;ll want to use 64-bit for optimal MongoDB support (see <a href="http://blog.mongodb.org/post/137788967/32-bit-limitations">this post</a>). Make sure to read through all the options in the wizard to configure your instance for your needs. <a href="http://docs.mongodb.org/ecosystem/platforms/amazon-ec2/">MongoDB recommends</a> an <a href="https://aws.amazon.com/ec2/instance-types/">instance type</a> that is EBS-optimized. More on that shortly.</p>
+
+<p>If you use an automatically assigned IP address, you&#39;ll lose it when your instance is stopped or terminated. So, to prevent any DNS-related interruption of service, you&#39;ll want to reserve a dedicated IP address, which Amazon refers to as an <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP</a> (EIP). You can&#39;t assign an EIP until you&#39;ve already launched your EC2, so we&#39;ll revisit that later. For right now, automatically assign a public IP.</p>
+
+<h2 id="toc_2">Storage</h2>
+
+<p>The <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html">AWS storage documentation</a> recommends using EBS for persistent data that you care about--like your database. From the documentation:</p>
+
+<blockquote>
+<p>An Amazon EBS volume behaves like a raw, unformatted, external block device that you can attach to a single instance. They persist independently from the running life of an Amazon EC2 instance. After an EBS volume is attached to an instance, you can use it like any other physical hard drive. As illustrated in the previous figure, you can attach multiple volumes to an instance. You can also detach an EBS volume from one instance and attach it to another instance.</p>
+</blockquote>
+
+<p>This comes in handy if you need to upgrade your EC2 instance, or provision a new one for any reason. Again, <a href="http://docs.mongodb.org/ecosystem/platforms/amazon-ec2/">MongoDB recommends</a> an EBS-optimized EC2 instance with a <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html#EBSVolumeTypes_piops">Provisioned IOPS EBS volume</a>. So set up an EBS volume, and we&#39;ll be mounting it for MongoDB to use. It would make good sense to utilize Amazon S3 for static assets, but that&#39;s outside the scope of this article.</p>
+
+<h2 id="toc_3">Configure Security Group</h2>
+
+<p>You&#39;ll want to have SSH (port 22) open to any IP you might access it from. You&#39;ll also want HTTP and HTTPS ports accessible from any IP.</p>
+
+<h2 id="toc_4">Launch!</h2>
+
+<p>You didn&#39;t upload your SSH key beforehand, did you? That&#39;s okay, I didn&#39;t figure that out until afterwards, either. So I generated a key, and copied my normal SSH key into the <code>authorized_keys</code> file afterwards. Assuming you&#39;ve placed the key in your <code>~/.ssh/</code> dir:</p>
+<div class="highlight"><pre><code class="bash"><span class="c"># Make sure you restrict permissions for your private key file</span>
+chmod 400 ~/.ssh/aws.pem
+<span class="c"># Add the downloaded AWS key to your key agent</span>
+ssh-add ~/.ssh/aws.pem
+<span class="c"># If you don&#39;t have ssh-copy-id, you can install it via homebrew:</span>
+brew install ssh-copy-id
+<span class="c"># Then, copy your normal SSH key to the EC2&#39;s ~/.ssh/authorized_keys file</span>
+ssh-copy-id -i ~/.ssh/id_rsa.pub ubuntu@hostname
+</code></pre></div>
+<p>Now you can setup <a href="https://help.github.com/articles/using-ssh-agent-forwarding">ssh agent forwarding</a> for handy stuff like connecting to Github!</p>
+
+<h2 id="toc_5">Onwards: Install and Configure MongoDB</h2>
+
+<p>Again, this is all based on <a href="http://docs.mongodb.org/ecosystem/platforms/amazon-ec2/#deploy-mongodb-ec2">MongoDB&#39;s official documentation</a>. They recommend using separate EBS stores for your data, journal, and log, but I&#39;m just going to cover putting it all on a single EBS to keep things a little simpler.</p>
+
+<p>First, let&#39;s install MongoDB. These commands are directly from <a href="http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/">their tutorial</a>:</p>
+<div class="highlight"><pre><code class="bash"><span class="c"># Import MongoDB&#39;s GPG key used to ensure package authenticity</span>
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+<span class="c"># Create a /etc/apt/sources.list.d/mongodb.list file</span>
+<span class="nb">echo</span> <span class="s1">&#39;deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen&#39;</span> | sudo tee /etc/apt/sources.list.d/mongodb.list
+<span class="c"># Update your repository</span>
+sudo apt-get update
+<span class="c"># Install MongoDB</span>
+sudo apt-get install mongodb-10gen
+</code></pre></div>
+<p>Now that that&#39;s done, let&#39;s configure it to use the EBS volume we setup earlier. The AWS console will say your volume is something like /dev/sdb, but the actual device name in Ubuntu will be something like /dev/xvdb.</p>
+<div class="highlight"><pre><code class="bash"><span class="c"># Create the file system on your EBS volume. &lt;device name&gt; is your EBS path</span>
+<span class="c"># sudo mkfs -t ext4 &lt;device name&gt;</span>
+sudo mkfs -t ext4 /dev/xvdb
+<span class="c"># Create a folder wherever you want to mount it</span>
+<span class="c"># mkdir &lt;mount point&gt;</span>
+mkdir /database
+<span class="c"># Add an fstab entry so it gets mounted on system boot</span>
+<span class="nb">echo</span> <span class="s1">&#39;/dev/xvdb /database ext4 defaults,auto,noatime,noexec 0 0&#39;</span> | sudo tee -a /etc/fstab
+<span class="c"># Mount it</span>
+sudo mount /dev/xvdb /database
+<span class="c"># Create directories for the actual data, logs, and journal</span>
+<span class="nb">cd</span> /database
+mkdir data journal log
+<span class="c"># Set MongoDB to the owner of these directories</span>
+sudo chown -R mongodb:mongodb /database
+<span class="c"># And link your journal</span>
+ln -s /database/journal /database/data/journal
+</code></pre></div>
+<p>Now configure MongoDB to use these paths: <code>sudo nano /etc/mongodb.conf</code></p>
+<div class="highlight"><pre><code class="text">dbpath = /database/data
+logpath = /database/log/mongodb.log
+</code></pre></div>
+<h2 id="toc_6">Install Node</h2>
+
+<p>See <a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os">the official wiki</a> for more information about installing Node.js on Ubuntu. Ubuntu&#39;s default Node package lags behind the latest stable release. If that&#39;s okay, then go ahead:</p>
+<div class="highlight"><pre><code class="bash">sudo apt-get install nodejs
+<span class="c"># Due to a naming conflict, node was renamed to nodejs in apt</span>
+<span class="c"># So you&#39;ll need to create a symlink to use the command &#39;node&#39;</span>
+ln -s /usr/bin/nodejs /usr/bin/node
+</code></pre></div>
+<p>But if you want to install the latest version of Node, you&#39;re gonna have to do this:</p>
+<div class="highlight"><pre><code class="bash">sudo apt-get update
+sudo apt-get install python-software-properties python g++ make
+sudo apt-add-repository ppa:chris-lea/node.js
+sudo apt-get update
+sudo apt-get install nodejs
+ln -s /usr/bin/nodejs /usr/bin/node
+</code></pre></div>
+<p>Listening on port 80 requires root privileges. Instead, Node will listen on port 3000, and we&#39;ll redirect requests from port 80 to there:</p>
+<div class="highlight"><pre><code class="bash">sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
+</code></pre></div>
+<p>Add the command (minus <code>sudo</code>) to your rc.local file to make sure this applies on boot as well: <code>sudo nano /etc/rc.local</code></p>
+
+<h2 id="toc_7">Keep your app running forever</h2>
+
+<p>For this, we&#39;re going to use <a href="https://github.com/nodejitsu/forever">Forever</a> and <a href="http://upstart.ubuntu.com/">Upstart</a>. Forever is used in production at <a href="https://www.nodejitsu.com/">Nodejitsu</a>, and restarts your app if it crashes. Upstart registers your app as a service, starting it on boot and cleanly stopping it on shutdown. The configuration that follows is directly from <a href="https://www.exratione.com/2013/02/nodejs-and-forever-as-a-service-simple-upstart-and-init-scripts-for-ubuntu/">this awesome guide on exratione.com</a>.</p>
+
+<p>First, install Forever:</p>
+<div class="highlight"><pre><code class="bash">sudo npm install -g forever
+</code></pre></div>
+<p>Then, create the following Upstart configuration: <code>sudo nano /etc/init/myapp.conf</code></p>
+<div class="highlight"><pre><code class="bash"><span class="c"># My App upstart config /etc/init/myapp.conf</span>
+description <span class="s2">&quot;Startup script for My App using Forever&quot;</span>
+
+start on startup
+stop on shutdown
+
+<span class="c"># So that Upstart reports the pid of the Node.js process started by Forever</span>
+<span class="c"># rather than Forever&#39;s own pid</span>
+expect fork
+
+<span class="c"># Full path to the node binaries</span>
+env <span class="nv">NODE_BIN_DIR</span><span class="o">=</span><span class="s2">&quot;/usr/bin/node&quot;</span>
+
+<span class="c"># Path for finding global NPM node_modules</span>
+env <span class="nv">NODE_PATH</span><span class="o">=</span><span class="s2">&quot;/usr/lib/nodejs:/usr/lib/node_modules:/usr/share/javascript&quot;</span>
+
+<span class="c"># Directory containing My App</span>
+env <span class="nv">APPLICATION_DIRECTORY</span><span class="o">=</span><span class="s2">&quot;/home/ubuntu/myapp&quot;</span>
+
+<span class="c"># Application javascript filename</span>
+env <span class="nv">APPLICATION_START</span><span class="o">=</span><span class="s2">&quot;server.js&quot;</span>
+
+<span class="c"># Environment to run app as</span>
+env <span class="nv">NODE_ENV</span><span class="o">=</span><span class="s2">&quot;production&quot;</span>
+
+<span class="c"># Log file</span>
+env <span class="nv">LOG</span><span class="o">=</span><span class="s2">&quot;/var/log/chirp.log&quot;</span>
+
+script
+  <span class="nv">PATH</span><span class="o">=</span><span class="nv">$NODE_BIN_DIR</span>:<span class="nv">$PATH</span>
+
+  <span class="nb">exec </span>forever --sourceDir <span class="nv">$APPLICATION_DIRECTORY</span> --append -l <span class="nv">$LOG</span> <span class="se">\</span>
+    --minUptime 5000 --spinSleepTime 2000 start <span class="nv">$APPLICATION_START</span>
+end script
+
+pre-stop script
+  <span class="nv">PATH</span><span class="o">=</span><span class="nv">$NODE_BIN_DIR</span>:<span class="nv">$PATH</span>
+  <span class="nb">exec </span>forever stop <span class="nv">$APPLICATION_START</span> &gt;&gt; <span class="nv">$LOG</span>
+end script
+</code></pre></div>
+<p>Now you can start, restart, and stop your app like this:</p>
+<div class="highlight"><pre><code class="bash">sudo service myapp start
+sudo service myapp restart
+sudo service myapp stop
+</code></pre></div>
+<h2 id="toc_8">Ta-Da!</h2>
+
+<p>Now your environment is ready to rock&#39;n&#39;roll—you just need to figure out a deployment methodology. Perhaps I&#39;ll cover an automated build/deployment process for a <abbr title="Mongo, Express, Angular, Node.js">MEAN</abbr> stack app next?</p>
+
+<p>Post a comment if you have any questions, and I&#39;ll be happy to do what I can to help.</p>
+]]></content>
+  </entry>
+  
+</feed>
