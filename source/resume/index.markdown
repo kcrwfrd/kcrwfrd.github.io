@@ -23,7 +23,7 @@ Responsible for the development of a thick-client web app built on AngularJS, se
 __Lead Front-End Web Developer__, January 2012 - October 2013
 __Front-End Web Developer__, June 2011 - December 2011
 
-Lead a team of developers, working together to develop tools and processes to rapidly develop websites for our clients. Everyday technology used included PHP, HTML5, CSS3, SASS/Compass, Javascript, jQuery, Git, and (sigh) Wordpress.
+Lead a team of developers, working together to develop tools and processes to rapidly develop websites for our clients. Everyday technology used included PHP, HTML5, CSS3, SASS/Compass, Javascript, jQuery, Git, and Wordpress.
 
 #### Accomplishments
 * Designed and developed tools for the automation of project initialization
