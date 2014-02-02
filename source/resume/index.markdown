@@ -15,9 +15,11 @@ To work with a talented team who challenges and inspires me to grow into an adep
 ## Experience
 
 ### Chirp
-__Front-End Engineer__, October 2013 - Present
+__UI Engineer__, October 2013 - Present
 
-Responsible for the development of a thick-client web app built on AngularJS, served by a Node.js middle layer, interfacing with a back-end REST API.
+Chirp is a mobile social messaging app, and I'm responsible for the development of its web interface. I built a Single Page Application on AngularJS, loosely coupled with a Node.js middle layer. All views, templating, and UI logic are solely the concern of the client-side AngularJS layer, and are automatically compiled with a Grunt-based build process. The Node.js layer is responsible for authentication and session management, and provides a RESTful JSON API that wraps a separate back-end API, which also serves the mobile client.
+
+In addition, I developed a custom analytics dashboard for business intelligence purposes, using the Google Charts API.
 
 ### Gunn/Jerkens Marketing &amp; Communications
 __Lead Front-End Web Developer__, January 2012 - October 2013
@@ -29,7 +31,7 @@ One of my most significant impacts, and easily my most rewarding, was building a
 
 Together, we designed and developed tools for the automation of project boilerplate, shortening turn-around times and increasing profit margins. When a problem got tough, pair programming made quick work of it. We organized meetups, and pitched well-received product development initiatives company-wide.
 
-Everyday technology used included PHP, HTML5, CSS3, SASS/Compass, Javascript, jQuery, Git, and Wordpress.
+Everyday technology used included PHP, HTML5, CSS3, SASS/Compass, Javascript, jQuery, and Git.
 
 ### Epraxa
 __Front-End Web Developer__, February 2009 - June 2011
