@@ -21,7 +21,7 @@ You can also upload a public key via the command line, with [ec2-import-keypair]
 aws ec2 import-key-pair --key-name user@email.com --public-key-material file://~/.ssh/id_rsa.pub
 ```
 
-If you do this beforehand, your key will show up in the web interface for you to select when launching. Of course, you don't have to do this. It's just me being pedantic :P
+If you do this beforehand, your key will show up in the web interface for you to select when launching. Otherwise, AWS will generate the private key for you to download.
 
 ## Provision your EC2 instance
 I chose Ubuntu Server 13.10 for my AMI. You'll want to use 64-bit for optimal MongoDB support (see [this post](http://blog.mongodb.org/post/137788967/32-bit-limitations)). Make sure to read through all the options in the wizard to configure your instance for your needs. [MongoDB recommends](http://docs.mongodb.org/ecosystem/platforms/amazon-ec2/) an [instance type](https://aws.amazon.com/ec2/instance-types/) that is EBS-optimized. More on that shortly.
