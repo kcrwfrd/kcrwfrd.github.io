@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Crawford, Web Developer]]></title>
   <link href="http://kvcrawford.github.io/atom.xml" rel="self"/>
   <link href="http://kvcrawford.github.io/"/>
-  <updated>2014-02-04T12:33:49-08:00</updated>
+  <updated>2014-08-27T22:39:00-07:00</updated>
   <id>http://kvcrawford.github.io/</id>
   <author>
     <name><![CDATA[Kevin Crawford]]></name>
@@ -34,7 +34,7 @@
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>aws ec2 import-key-pair --key-name user@email.com --public-key-material file://~/.ssh/id_rsa.pub
 </span></code></pre></td></tr></table></div></figure>
 
-<p>If you do this beforehand, your key will show up in the web interface for you to select when launching. Of course, you don&#39;t have to do this. It&#39;s just me being pedantic :P</p>
+<p>If you do this beforehand, your key will show up in the web interface for you to select when launching. Otherwise, AWS will generate the private key for you to download.</p>
 
 <h2 id="toc_1">Provision your EC2 instance</h2>
 
@@ -322,17 +322,6 @@
 </span></code></pre></td></tr></table></div></figure>
 
 <p>Thank you to <a href="http://blog.zerosharp.com/clone-your-octopress-to-blog-from-two-places/">zerosharp.com</a> and <a href="http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one">dblock.org</a> for helping me figure that one out.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[When a Fire Starts to Burn]]></title>
-    <link href="http://kvcrawford.github.io/blog/2013/10/09/when-a-fire-starts-to-burn/"/>
-    <updated>2013-10-09T13:40:00-07:00</updated>
-    <id>http://kvcrawford.github.io/blog/2013/10/09/when-a-fire-starts-to-burn</id>
-    <content type="html"><![CDATA[<p>I&#39;ve just been bursting at the seams to post this good news. Today is my first day of work at <a href="http://uchirp.it">Chirp</a>, a social media startup based right here in Long Beach. The team is awesome, and I couldn&#39;t be more excited to learn and grow as a developer, working on something big in the process. Thank you guys for such an amazing opportunity, and thank you to my previous employer, <a href="http://gunnjerkens.com">Gunn/Jerkens</a> &amp; Epraxa, for a wonderful 6.5 years. Here&#39;s to the new road ahead!</p>
-
-<p><img class="center" src="http://distilleryimage4.ak.instagram.com/4f205ba2312211e3a0fd22000aa8039a_8.jpg" title="Chirp HQ" alt="Chirp HQ"></p>
 ]]></content>
   </entry>
   

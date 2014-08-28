@@ -4,7 +4,7 @@
   <title><![CDATA[Category: nodejs mongodb aws ubuntu servers | Kevin Crawford, Web Developer]]></title>
   <link href="http://kvcrawford.github.io/blog/categories/nodejs-mongodb-aws-ubuntu-servers/atom.xml" rel="self"/>
   <link href="http://kvcrawford.github.io/"/>
-  <updated>2014-02-04T12:33:49-08:00</updated>
+  <updated>2014-08-27T22:39:00-07:00</updated>
   <id>http://kvcrawford.github.io/</id>
   <author>
     <name><![CDATA[Kevin Crawford]]></name>
@@ -31,7 +31,7 @@
 <p>You can also upload a public key via the command line, with <a href="http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-ImportKeyPair.html">ec2-import-keypair</a>. I installed <a href="https://github.com/aws/aws-cli">aws-cli</a> (note: slightly different from <code>ec2-import-keypair</code>) and issued the following command:</p>
 <div class="highlight"><pre><code class="bash">aws ec2 import-key-pair --key-name user@email.com --public-key-material file://~/.ssh/id_rsa.pub
 </code></pre></div>
-<p>If you do this beforehand, your key will show up in the web interface for you to select when launching. Of course, you don&#39;t have to do this. It&#39;s just me being pedantic :P</p>
+<p>If you do this beforehand, your key will show up in the web interface for you to select when launching. Otherwise, AWS will generate the private key for you to download.</p>
 
 <h2 id="toc_1">Provision your EC2 instance</h2>
 
