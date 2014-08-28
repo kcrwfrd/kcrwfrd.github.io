@@ -12,5 +12,3 @@ I identify as a fully-native citizen of the web, having grown up immersed in com
 I coded my first website at the age of 10, because I _really_ wanted to share my Starcraft strategies with whomever would listen. It's the exact same passion that drives me today in my career: I want to make something that not only makes me happy, but that others will find value in as well. I don't think there's anything else that could make a person more productive.
 
 UX is my passion. I prefer implementation over design, though I certainly enjoy giving input during the design process. Still, I really appreciate working with a strong designer to help make everything truly beautiful.
-
-__My objective:__ to work with a talented team who challenges and inspires me to grow into an adept full-stack UX Engineer. I want to make peoples' lives easier, through code.
