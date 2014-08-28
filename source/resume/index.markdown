@@ -10,7 +10,7 @@ footer: false
 kvcrawford [at] gmail [dot] com
 
 ## Objective
-To work with a talented team whose members challenge and inspire one another. I am passionate about both user and *developer* experience. I want to learn, grow, and make peoples' lives easier through code.
+To work with a talented team whose members challenge and inspire one another. I am passionate about user and *developer* experience. I want to learn, grow, and make peoples' lives easier through code.
 
 ## Experience
 
@@ -52,7 +52,6 @@ __Build tools__: Gulp, Grunt, Bower
 __Testing__: Karma, Jasmine, test-driven development
 
 ## Professional Interests
-* Coffeescript, Node, AngularJS
 * Open source software
 * UX
 * Automation and efficiency
