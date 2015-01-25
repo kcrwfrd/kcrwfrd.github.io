@@ -14,10 +14,15 @@ To work in a company with a product or engineering-driven culture, where passion
 
 ## Experience
 
-### Shift
-__Front-End Engineer__, March 2014 - Present
+### [Shift.com](http://shift.com)
+__Lead Front-End Engineer__, September 2014 - Present
+__Front-End Engineer__, March 2014 - September 2014
 
-Shift provides enterprise-level marketing software for planning, optimizing and analyzing social advertising campaigns. As part of a team of client-side specialists, my role is to help develop and maintain applications built on AngularJS by an agile and test-driven development methodology.
+Shift provides enterprise-level marketing software for managing, analyzing, and optimizing advertising campaigns on social media.
+
+Shortly after joining, I helped rewrite their flagship product, the Facebook Media Manager. The app is a "fat-client" SPA built on Angular, with our own backend middle layer, interfacing with the Facebook Ads API.
+
+After its initial release, I took over as Front-End Lead for its continued maintenance and development of new features. My role is to solve architectural challenges, oversee development by team members, and help develop the app by an agile and test-driven development methodology.
 
 ### Chirp
 __UI Engineer__, October 2013 - February 2014
