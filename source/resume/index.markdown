@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "R&eacute;sum&eacute;"
-date: 2013-09-22 00:04
+date: 2015-01-24
 comments: false
 sharing: false
 footer: false
@@ -10,7 +10,7 @@ footer: false
 kvcrawford [at] gmail [dot] com
 
 ## Objective
-To work with a talented team whose members challenge and inspire one another. I am passionate about user and *developer* experience. I want to learn, grow, and make peoples' lives easier through code.
+To work in a company with a product or engineering-driven culture, where passion makes the work fun.
 
 ## Experience
 
