@@ -31,7 +31,7 @@ Chirp is a mobile social messaging app, and I was responsible for the developmen
 
 In addition, I developed a custom analytics dashboard for business intelligence purposes, using the Google Charts API.
 
-### Gunn/Jerkens Marketing &amp; Communications
+### [Gunn/Jerkens Marketing &amp; Communications](http://gunnjerkens.com/)
 __Lead Front-End Web Developer__, January 2012 - October 2013
 __Front-End Web Developer__, June 2011 - December 2011
 
@@ -47,7 +47,7 @@ __Jr. Front-End Web Developer__, June 2007 - February 2009
 ### Freelance
 __Web Developer__, July 2006 - Spring 2009
 
-Favorite project involved implementation of film asset tracking system for TakePart.com, Participant Media's social action network.
+Favorite project involved implementation of film asset tracking system for [TakePart.com](http://www.takepart.com/), [Participant Media](http://www.participantmedia.com/)'s social action network.
 
 ## Skillset
 __Languages__: Coffeescript, Javascript, PHP, HTML, CSS, SCSS, Less, Stylus, Jade
@@ -56,20 +56,9 @@ __Libraries__: jQuery, Underscore/LoDash, Bootstrap
 __Build tools__: Gulp, Grunt, Bower
 __Testing__: Karma, Jasmine, test-driven development
 
-## Professional Interests
-* Open source software
-* UX
-* Automation and efficiency
-* The command line
-* Freenode IRC
-* Stackoverflow
-* Github
-
 ## Personal Interests
 * Music
-* Hiking
-* Cooking
-* Fitness
+* Fitness, hiking, yoga
 * Code—it's not just a professional thing
 
 ## Find Me Online
