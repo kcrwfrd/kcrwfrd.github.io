@@ -10,7 +10,7 @@ footer: false
 kvcrawford [at] gmail [dot] com
 
 ## Objective
-To work in a company with a product or engineering-driven culture, where passion makes the work fun.
+To work on a team with a product-driven culture, where passion makes the work fun.
 
 ## Experience
 
