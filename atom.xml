@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Crawford, Web Developer]]></title>
   <link href="http://kvcrawford.github.io/atom.xml" rel="self"/>
   <link href="http://kvcrawford.github.io/"/>
-  <updated>2015-02-05T23:44:43-08:00</updated>
+  <updated>2015-02-05T23:49:05-08:00</updated>
   <id>http://kvcrawford.github.io/</id>
   <author>
     <name><![CDATA[Kevin Crawford]]></name>
@@ -322,6 +322,17 @@
 </span></code></pre></td></tr></table></div></figure>
 
 <p>Thank you to <a href="http://blog.zerosharp.com/clone-your-octopress-to-blog-from-two-places/">zerosharp.com</a> and <a href="http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one">dblock.org</a> for helping me figure that one out.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[When a Fire Starts to Burn]]></title>
+    <link href="http://kvcrawford.github.io/blog/2013/10/09/when-a-fire-starts-to-burn/"/>
+    <updated>2013-10-09T13:40:00-07:00</updated>
+    <id>http://kvcrawford.github.io/blog/2013/10/09/when-a-fire-starts-to-burn</id>
+    <content type="html"><![CDATA[<p>I&#39;ve just been bursting at the seams to post this good news. Today is my first day of work at <a href="http://uchirp.it">Chirp</a>, a social media startup based right here in Long Beach. The team is awesome, and I couldn&#39;t be more excited to learn and grow as a developer, working on something big in the process. Thank you guys for such an amazing opportunity, and thank you to my previous employer, <a href="http://gunnjerkens.com">Gunn/Jerkens</a> &amp; Epraxa, for a wonderful 6.5 years. Here&#39;s to the new road ahead!</p>
+
+<p><img class="center"  title="Chirp HQ" alt="Chirp HQ"></p>
 ]]></content>
   </entry>
   
