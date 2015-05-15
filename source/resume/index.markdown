@@ -5,42 +5,51 @@ date: 2015-01-24
 comments: false
 sharing: false
 footer: false
+sidebar: collapse
 ---
 
 kvcrawford [at] gmail [dot] com
 
 ## Objective
-To work on a team with a product-driven culture, where passion makes the work fun.
+To work on a healthy team with a product-driven culture, where passion makes the work fun.
+
+## Skillset
+* Javascript, Coffeescript, Python, PHP
+* AngularJS, Backbone.js, Flux, React, Node.js
+* Test-Driven Development (TDD)
+* Automated front-end build systems (Gulp, Grunt, Browserify, etc.)
+* RESTful API design and consumption
+* CSS and its various preprocessors (Sass, LESS, etc.)
+* Firmly rooted in a strong desire for optimal user experience.
 
 ## Experience
 
 ### [Shift.com](http://shift.com)
-__Sr. Front-End Engineer__, September 2014 - Present
-__Front-End Engineer__, March 2014 - September 2014
+__Front-End Engineer__, March 2014 - May 2015
 
 Shift provides enterprise-level marketing software for managing, analyzing, and optimizing advertising campaigns on social media.
 
-Shortly after joining, I helped rewrite their flagship product, the Facebook Media Manager. The app is a "fat-client" SPA built on Angular, with our own backend middle layer, interfacing with the Facebook Ads API.
+Shortly after joining, I helped rewrite their flagship product, the Facebook Media Manager (FMM). It is a "fat-client" single-page application built on Angular, with a Python-driven middle layer, interfacing with the Facebook Marketing API.
 
-After its initial release, I took over as the project's front-end lead for its continued maintenance and development of new features. My role is to solve architectural challenges, oversee development by team members, and help develop the app by an agile and test-driven development methodology.
+In the face of a sudden exodus of front-end talent, I took charge and successfully on-boarded a new team of re-assigned back-end engineers and new hires. At the time of my leaving, I was the only developer to have worked on the codebase from its beginning.
+
+FMM would come to serve as a strong asset in consideration for Shift's $50M acquisition by [Brand Networks](https://bn.co/) in May, 2015.
 
 ### Chirp
-__UI Engineer__, October 2013 - February 2014
+__Software Engineer__, October 2013 - February 2014
 
-Chirp is a mobile social messaging app, and I was responsible for the development of its web interface. I built a Single Page Application on AngularJS, loosely coupled with a Node.js middle layer. All views, templating, and UI logic are solely the concern of the client-side AngularJS layer, and are automatically compiled with a Grunt-based build process. The Node.js layer is responsible for authentication and session management, and provides a RESTful JSON API that wraps a separate back-end API, which also serves the mobile client.
-
-In addition, I developed a custom analytics dashboard for business intelligence purposes, using the Google Charts API.
+Chirp was a mobile social messaging app, and I was responsible for the development of its web interface. I built a single-page application on AngularJS, loosely coupled with a Node.js middle layer that would serve to wrap—and eventually replace—a prototyped backend API with a new, RESTful API.
 
 ### [Gunn/Jerkens Marketing &amp; Communications](http://gunnjerkens.com/)
-__Lead Front-End Web Developer__, January 2012 - October 2013
-__Front-End Web Developer__, June 2011 - December 2011
+__Lead Web Developer__, January 2012 - October 2013
+__Web Developer__, June 2011 - December 2011
 
 * Developed CMS-driven B2C websites for clients, typically from the homebuilding industry.
 * Built and lead development team.
 
 ### Epraxa
-__Front-End Web Developer__, February 2009 - June 2011
-__Jr. Front-End Web Developer__, June 2007 - February 2009
+__Web Developer__, February 2009 - June 2011
+__Jr. Web Developer__, June 2007 - February 2009
 
 * Subcontracted with ad agencies to develop their website projects.
 
@@ -49,17 +58,10 @@ __Web Developer__, July 2006 - Spring 2009
 
 Favorite project involved implementation of film asset tracking system for [TakePart.com](http://www.takepart.com/), [Participant Media](http://www.participantmedia.com/)'s social action network.
 
-## Skillset
-__Languages__: Coffeescript, Javascript, PHP, HTML, CSS, SCSS, Less, Stylus, Jade
-__Frameworks__: AngularJS, Backbone.js, Node Express
-__Libraries__: jQuery, Underscore/LoDash, Bootstrap
-__Build tools__: Gulp, Grunt, Bower
-__Testing__: Karma, Jasmine, test-driven development
-
 ## Personal Interests
-* Music
-* Fitness, hiking, yoga
-* Code—it's not just a professional thing
+* Music, from house to ambient to bass to hip hop to indie, and everything in between.
+* Fitness: weightlifting, running, swimming, hiking, volleyball, yoga.
+* Code—it's not just a professional thing.
 
 ## Find Me Online
 https://github.com/kvcrawford
