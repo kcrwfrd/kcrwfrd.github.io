@@ -45,7 +45,7 @@ __Lead Web Developer__, January 2012 - October 2013
 __Web Developer__, June 2011 - December 2011
 
 * Developed CMS-driven B2C websites for clients, typically from the homebuilding industry.
-* Built and lead development team.
+* Starting out as the sole developer, I built and lead this entirely new department at the firm.
 
 ### Epraxa
 __Web Developer__, February 2009 - June 2011
