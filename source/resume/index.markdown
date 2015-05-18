@@ -33,7 +33,7 @@ Shortly after joining, I helped rewrite their flagship product, the Facebook Med
 
 In the face of a sudden exodus of front-end talent, I took charge and successfully on-boarded a new team of re-assigned back-end engineers and new hires. At the time of my leaving, I was the only developer to have worked on the codebase from its beginning.
 
-FMM would come to serve as a strong asset in consideration for Shift's $50M acquisition by [Brand Networks](https://bn.co/) in May, 2015.
+FMM would come to serve as a defining asset in consideration for Shift's $50M acquisition by [Brand Networks](https://bn.co/) in May, 2015.
 
 ### Chirp
 __Software Engineer__, October 2013 - February 2014
