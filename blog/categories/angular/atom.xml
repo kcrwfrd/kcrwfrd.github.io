@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: angular | Kevin Crawford, Software Engineer]]></title>
+  <link href="http://kvcrawford.github.io/blog/categories/angular/atom.xml" rel="self"/>
+  <link href="http://kvcrawford.github.io/"/>
+  <updated>2015-05-30T17:10:30-07:00</updated>
+  <id>http://kvcrawford.github.io/</id>
+  <author>
+    <name><![CDATA[Kevin Crawford]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing: ng-coffeeplate]]></title>
+    <link href="http://kvcrawford.github.io/blog/2015/02/09/introducing-ng-coffeeplate/"/>
+    <updated>2015-02-09T20:06:00-08:00</updated>
+    <id>http://kvcrawford.github.io/blog/2015/02/09/introducing-ng-coffeeplate</id>
+    <content type="html"><![CDATA[<p>Grunt was really awesome when it first came on the scene, but I&#39;ve really come to love Gulp. It&#39;s faster, more flexible, and I find the &quot;code-over-configuration&quot; paradigm much easier to reason about—all with fewer lines of code.</p>
+
+<p>I needed a boilerplate—suited to my tastes—that I could use to quickly get up and running on new projects with. If you&#39;re a fan of Angular, CoffeeScript, Jade, Sass, and TDD, then maybe you&#39;ll like it too!</p>
+
+<p>Check it out at <a href="https://github.com/kvcrawford/ng-coffeeplate">https://github.com/kvcrawford/ng-coffeeplate</a></p>
+]]></content>
+  </entry>
+  
+</feed>
