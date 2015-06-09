@@ -113,9 +113,9 @@
 
 <!-- more -->
 
-<h2 id="toc_0">First, a Note About Keypairs</h2>
+<h2 id="first,-a-note-about-keypairs">First, a Note About Keypairs</h2>
 
-<p>When you launch a new instance, it&#39;s pretty funky that Amazon doesn&#39;t let you paste or upload your public key to use for authentication. You can either generate a new private key to download, or select an existing key from your account. I recommend that you upload your public key beforehand, by going to the <strong>AWS Console -> EC2 -> Key Pairs -> Import Key Pair</strong>.</p>
+<p>When you launch a new instance, it&#39;s pretty funky that Amazon doesn&#39;t let you paste or upload your public key to use for authentication. You can either generate a new private key to download, or select an existing key from your account. I recommend that you upload your public key beforehand, by going to the <strong>AWS Console -&gt; EC2 -&gt; Key Pairs -&gt; Import Key Pair</strong>.</p>
 
 <p>You can also upload a public key via the command line, with <a href="http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-ImportKeyPair.html">ec2-import-keypair</a>. I installed <a href="https://github.com/aws/aws-cli">aws-cli</a> (note: slightly different from <code>ec2-import-keypair</code>) and issued the following command:</p>
 
@@ -125,13 +125,13 @@
 
 <p>If you do this beforehand, your key will show up in the web interface for you to select when launching. Otherwise, AWS will generate the private key for you to download.</p>
 
-<h2 id="toc_1">Provision your EC2 instance</h2>
+<h2 id="provision-your-ec2-instance">Provision your EC2 instance</h2>
 
 <p>I chose Ubuntu Server 13.10 for my AMI. You&#39;ll want to use 64-bit for optimal MongoDB support (see <a href="http://blog.mongodb.org/post/137788967/32-bit-limitations">this post</a>). Make sure to read through all the options in the wizard to configure your instance for your needs. <a href="http://docs.mongodb.org/ecosystem/platforms/amazon-ec2/">MongoDB recommends</a> an <a href="https://aws.amazon.com/ec2/instance-types/">instance type</a> that is EBS-optimized. More on that shortly.</p>
 
 <p>If you use an automatically assigned IP address, you&#39;ll lose it when your instance is stopped or terminated. So, to prevent any DNS-related interruption of service, you&#39;ll want to reserve a dedicated IP address, which Amazon refers to as an <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP</a> (EIP). You can&#39;t assign an EIP until you&#39;ve already launched your EC2, so we&#39;ll revisit that later. For right now, automatically assign a public IP.</p>
 
-<h2 id="toc_2">Storage</h2>
+<h2 id="storage">Storage</h2>
 
 <p>The <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html">AWS storage documentation</a> recommends using EBS for persistent data that you care about&#8211;like your database. From the documentation:</p>
 
@@ -141,11 +141,11 @@
 
 <p>This comes in handy if you need to upgrade your EC2 instance, or provision a new one for any reason. Again, <a href="http://docs.mongodb.org/ecosystem/platforms/amazon-ec2/">MongoDB recommends</a> an EBS-optimized EC2 instance with a <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html#EBSVolumeTypes_piops">Provisioned IOPS EBS volume</a>. So set up an EBS volume, and we&#39;ll be mounting it for MongoDB to use. It would make good sense to utilize Amazon S3 for static assets, but that&#39;s outside the scope of this article.</p>
 
-<h2 id="toc_3">Configure Security Group</h2>
+<h2 id="configure-security-group">Configure Security Group</h2>
 
 <p>You&#39;ll want to have SSH (port 22) open to any IP you might access it from. You&#39;ll also want HTTP and HTTPS ports accessible from any IP.</p>
 
-<h2 id="toc_4">Launch!</h2>
+<h2 id="launch!">Launch!</h2>
 
 <p>You didn&#39;t upload your SSH key beforehand, did you? That&#39;s okay, I didn&#39;t figure that out until afterwards, either. So I generated a key, and copied my normal SSH key into the <code>authorized_keys</code> file afterwards. Assuming you&#39;ve placed the key in your <code>~/.ssh/</code> dir:</p>
 
@@ -169,7 +169,7 @@
 
 <p>Now you can setup <a href="https://help.github.com/articles/using-ssh-agent-forwarding">ssh agent forwarding</a> for handy stuff like connecting to Github!</p>
 
-<h2 id="toc_5">Onwards: Install and Configure MongoDB</h2>
+<h2 id="onwards:-install-and-configure-mongodb">Onwards: Install and Configure MongoDB</h2>
 
 <p>Again, this is all based on <a href="http://docs.mongodb.org/ecosystem/platforms/amazon-ec2/#deploy-mongodb-ec2">MongoDB&#39;s official documentation</a>. They recommend using separate EBS stores for your data, journal, and log, but I&#39;m just going to cover putting it all on a single EBS to keep things a little simpler.</p>
 
@@ -239,7 +239,7 @@
 </span><span class='line'><span class="nv">logpath</span> <span class="o">=</span> /database/log/mongodb.log
 </span></code></pre></td></tr></table></div></figure>
 
-<h2 id="toc_6">Install Node</h2>
+<h2 id="install-node">Install Node</h2>
 
 <p>See <a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os">the official wiki</a> for more information about installing Node.js on Ubuntu. Ubuntu&#39;s default Node package lags behind the latest stable release. If that&#39;s okay, then go ahead:</p>
 
@@ -277,7 +277,7 @@
 
 <p>Add the command (minus <code>sudo</code>) to your rc.local file to make sure this applies on boot as well: <code>sudo nano /etc/rc.local</code></p>
 
-<h2 id="toc_7">Keep your app running forever</h2>
+<h2 id="keep-your-app-running-forever">Keep your app running forever</h2>
 
 <p>For this, we&#39;re going to use <a href="https://github.com/nodejitsu/forever">Forever</a> and <a href="http://upstart.ubuntu.com/">Upstart</a>. Forever is used in production at <a href="https://www.nodejitsu.com/">Nodejitsu</a>, and restarts your app if it crashes. Upstart registers your app as a service, starting it on boot and cleanly stopping it on shutdown. The configuration that follows is directly from <a href="https://www.exratione.com/2013/02/nodejs-and-forever-as-a-service-simple-upstart-and-init-scripts-for-ubuntu/">this awesome guide on exratione.com</a>.</p>
 
@@ -379,7 +379,7 @@
 </span><span class='line'>sudo service myapp stop
 </span></code></pre></td></tr></table></div></figure>
 
-<h2 id="toc_8">Ta-Da!</h2>
+<h2 id="ta-da!">Ta-Da!</h2>
 
 <p>Now your environment is ready to rock&#39;n&#39;roll—you just need to figure out a deployment methodology. Perhaps I&#39;ll cover an automated build/deployment process for a <abbr title="Mongo, Express, Angular, Node.js">MEAN</abbr> stack app next?</p>
 
@@ -451,6 +451,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/05/30/architectural-best-practices-for-dry/">Architectural Best Practices for Maintainable, Reusable UIs in Angular</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/02/09/introducing-ng-coffeeplate/">Introducing: Ng-coffeeplate</a>
       </li>
     
@@ -463,7 +467,7 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2013/09/20/hello-world/">Hello, World</a>
+        <a href="/blog/2013/10/09/when-a-fire-starts-to-burn/">When a Fire Starts to Burn</a>
       </li>
     
   </ul>
