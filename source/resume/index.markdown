@@ -57,13 +57,3 @@ __Jr. Web Developer__, June 2007 - February 2009
 __Web Developer__, July 2006 - Spring 2009
 
 Favorite project involved implementation of film asset tracking system for [TakePart.com](http://www.takepart.com/), [Participant Media](http://www.participantmedia.com/)'s social action network.
-
-## Personal Interests
-* Music, from house to ambient to bass to hip hop to indie, and everything in between.
-* Fitness: weightlifting, running, swimming, hiking, volleyball, yoga.
-* Code—it's not just a professional thing.
-
-## Find Me Online
-https://github.com/kvcrawford
-http://careers.stackoverflow.com/kvcrawford
-https://twitter.com/kvcrawford
