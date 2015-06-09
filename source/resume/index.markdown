@@ -8,10 +8,10 @@ footer: false
 sidebar: collapse
 ---
 
-kvcrawford [at] gmail [dot] com
 
-## Objective
-To work on a healthy team with a product-driven culture, where passion makes the work fun.
+{% blockquote kvcrawford [at] gmail [dot] com %}
+Deeply experienced with AngularJS and RESTFul APIs. Fan of TDD. Passionate for UX. A good team player, above all else.
+{% endblockquote %}
 
 ## Skillset
 * Javascript, Coffeescript, Python, PHP
