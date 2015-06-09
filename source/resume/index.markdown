@@ -8,10 +8,13 @@ footer: false
 sidebar: collapse
 ---
 
+{% blockquote %}
+Deeply experienced in AngularJS and RESTFul APIs. Fan of TDD. Passionate for UX.
 
-{% blockquote kvcrawford [at] gmail [dot] com %}
-Deeply experienced with AngularJS and RESTFul APIs. Fan of TDD. Passionate for UX. A good team player, above all else.
+A team player, above all else.
 {% endblockquote %}
+
+kvcrawford [at] gmail [dot] com
 
 ## Skillset
 * Javascript, Coffeescript, Python, PHP
