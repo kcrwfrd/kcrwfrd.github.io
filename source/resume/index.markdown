@@ -9,9 +9,7 @@ sidebar: collapse
 ---
 
 {% blockquote %}
-Deeply experienced in AngularJS and RESTFul APIs. Fan of TDD. Passionate for UX.
-
-A team player, above all else.
+I believe that when it comes to building software, the coding is the easy part. To ship a successful product, it really comes down to good teamwork. I always try to keep this in mind, and put an emphasis on being a good team player.
 {% endblockquote %}
 
 kvcrawford [at] gmail [dot] com
