@@ -35,7 +35,7 @@ code_dir: downloads/code
 category_dir: blog/categories
 markdown: redcarpet
 redcarpet:
-  extensions: ["hard_wrap", "no_intra_emphasis", "fenced_code_blocks", "autolink", "with_toc_data", "strikethrough", "footnotes"]
+  extensions: ["hard_wrap", "no_intra_emphasis", "fenced_code_blocks", "autolink", "with_toc_data", "strikethrough", "superscript"]
 pygments: false # default python pygments have been replaced by pygments.rb
 
 paginate: 10          # Posts per page on the blog index
