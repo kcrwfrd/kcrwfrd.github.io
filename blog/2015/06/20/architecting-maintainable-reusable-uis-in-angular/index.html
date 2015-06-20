@@ -1,24 +1,113 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Kevin Crawford, Software Engineer]]></title>
-  <link href="http://kvcrawford.github.io/atom.xml" rel="self"/>
-  <link href="http://kvcrawford.github.io/"/>
-  <updated>2015-06-20T13:31:18-07:00</updated>
-  <id>http://kvcrawford.github.io/</id>
-  <author>
-    <name><![CDATA[Kevin Crawford]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Architecting Maintainable, Reusable UIs in Angular: A Case Study - Kevin Crawford, Software Engineer</title>
+  <meta name="author" content="Kevin Crawford">
 
   
-  <entry>
-    <title type="html"><![CDATA[Architecting Maintainable, Reusable UIs in Angular: A Case Study]]></title>
-    <link href="http://kvcrawford.github.io/blog/2015/06/20/architecting-maintainable-reusable-uis-in-angular/"/>
-    <updated>2015-06-20T13:01:00-07:00</updated>
-    <id>http://kvcrawford.github.io/blog/2015/06/20/architecting-maintainable-reusable-uis-in-angular</id>
-    <content type="html"><![CDATA[<p>After spending substantial time working in-depth in Angular land, and with further influence from incursions into Flux &amp; React, I&#39;ve come to develop certain opinions on how to best architect non-trivial, data-driven UI flows in an Angular application.</p>
+  <meta name="description" content="After spending substantial time working in-depth in Angular land, and with further influence from incursions into Flux &amp; React, I&#39;ve come to &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://kvcrawford.github.io/blog/2015/06/20/architecting-maintainable-reusable-uis-in-angular">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Kevin Crawford, Software Engineer" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-44222285-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Kevin Crawford, Software Engineer</a></h1>
+  
+    <h2>Front-End Specialist &middot;  Full-Stack Generalist</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:kvcrawford.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/projects">Projects</a></li>
+  <li><a href="/resume">R&eacute;sum&eacute;</a></li>
+  <li><a href="/contact">Contact</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Architecting Maintainable, Reusable UIs in Angular: A Case Study</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-20T13:01:00-07:00" pubdate data-updated="true">Jun 20<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>After spending substantial time working in-depth in Angular land, and with further influence from incursions into Flux &amp; React, I&#39;ve come to develop certain opinions on how to best architect non-trivial, data-driven UI flows in an Angular application.</p>
 
 <p>What follows is a case study of a real-world UI problem, solved with the guidance of well-established principles and patterns in software design.</p>
 
@@ -1874,343 +1963,192 @@
 <p>Now, it&#39;s trivial to implement a permutation builder for <em>Gadgets</em>. Or, say we wanted to support permutations of images? The surface area for changes needed is minimal: we just need a new <code>kcPermutableImage</code> directive, and the rest would work pretty much as-is.</p>
 
 <p>Neat, huh?</p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    <title type="html"><![CDATA[Introducing: ng-coffeeplate]]></title>
-    <link href="http://kvcrawford.github.io/blog/2015/02/09/introducing-ng-coffeeplate/"/>
-    <updated>2015-02-09T20:06:00-08:00</updated>
-    <id>http://kvcrawford.github.io/blog/2015/02/09/introducing-ng-coffeeplate</id>
-    <content type="html"><![CDATA[<p>Grunt was really awesome when it first came on the scene, but I&#39;ve really come to love Gulp. It&#39;s faster, more flexible, and I find the &quot;code-over-configuration&quot; paradigm much easier to reason about—all with fewer lines of code.</p>
 
-<p>I needed a boilerplate—suited to my tastes—that I could use to quickly get up and running on new projects with. If you&#39;re a fan of Angular, CoffeeScript, Jade, Sass, and TDD, then maybe you&#39;ll like it too!</p>
+<span class="byline author vcard">Posted by <span class="fn">Kevin Crawford</span></span>
 
-<p>Check it out at <a href="https://github.com/kvcrawford/ng-coffeeplate">https://github.com/kvcrawford/ng-coffeeplate</a></p>
-]]></content>
-  </entry>
+      
+
+
+
+
+
+
+
+
   
-  <entry>
-    <title type="html"><![CDATA[Configuring a Production Node.js and MongoDB Environment in Ubuntu on an Amazon EC2 Instance]]></title>
-    <link href="http://kvcrawford.github.io/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance/"/>
-    <updated>2013-11-20T11:02:00-08:00</updated>
-    <id>http://kvcrawford.github.io/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance</id>
-    <content type="html"><![CDATA[<p>This tutorial will cover launching an EC2 instance, setting up the Node.js/MongoDB stack, and keeping your app running as a service so that it is resilient to failure. Most everything is taken directly from the official documentation for the various packages, and I included links. That way you can refer to the tutorial as a general guide, and still use official documentation to get into the nitty-gritty details.</p>
 
-<p>Right, then. Let&#39;s get started!</p>
 
-<!-- more -->
+<time datetime="2015-06-20T13:01:00-07:00" pubdate data-updated="true">Jun 20<span>th</span>, 2015</time>
+      
 
-<h2 id="first,-a-note-about-keypairs">First, a Note About Keypairs</h2>
-
-<p>When you launch a new instance, it&#39;s pretty funky that Amazon doesn&#39;t let you paste or upload your public key to use for authentication. You can either generate a new private key to download, or select an existing key from your account. I recommend that you upload your public key beforehand, by going to the <strong>AWS Console -&gt; EC2 -&gt; Key Pairs -&gt; Import Key Pair</strong>.</p>
-
-<p>You can also upload a public key via the command line, with <a href="http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-ImportKeyPair.html">ec2-import-keypair</a>. I installed <a href="https://github.com/aws/aws-cli">aws-cli</a> (note: slightly different from <code>ec2-import-keypair</code>) and issued the following command:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>aws ec2 import-key-pair --key-name user@email.com --public-key-material file://~/.ssh/id_rsa.pub
-</span></code></pre></td></tr></table></div></figure>
-
-<p>If you do this beforehand, your key will show up in the web interface for you to select when launching. Otherwise, AWS will generate the private key for you to download.</p>
-
-<h2 id="provision-your-ec2-instance">Provision your EC2 instance</h2>
-
-<p>I chose Ubuntu Server 13.10 for my AMI. You&#39;ll want to use 64-bit for optimal MongoDB support (see <a href="http://blog.mongodb.org/post/137788967/32-bit-limitations">this post</a>). Make sure to read through all the options in the wizard to configure your instance for your needs. <a href="http://docs.mongodb.org/ecosystem/platforms/amazon-ec2/">MongoDB recommends</a> an <a href="https://aws.amazon.com/ec2/instance-types/">instance type</a> that is EBS-optimized. More on that shortly.</p>
-
-<p>If you use an automatically assigned IP address, you&#39;ll lose it when your instance is stopped or terminated. So, to prevent any DNS-related interruption of service, you&#39;ll want to reserve a dedicated IP address, which Amazon refers to as an <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html">Elastic IP</a> (EIP). You can&#39;t assign an EIP until you&#39;ve already launched your EC2, so we&#39;ll revisit that later. For right now, automatically assign a public IP.</p>
-
-<h2 id="storage">Storage</h2>
-
-<p>The <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html">AWS storage documentation</a> recommends using EBS for persistent data that you care about&#8211;like your database. From the documentation:</p>
-
-<blockquote>
-<p>An Amazon EBS volume behaves like a raw, unformatted, external block device that you can attach to a single instance. They persist independently from the running life of an Amazon EC2 instance. After an EBS volume is attached to an instance, you can use it like any other physical hard drive. As illustrated in the previous figure, you can attach multiple volumes to an instance. You can also detach an EBS volume from one instance and attach it to another instance.</p>
-</blockquote>
-
-<p>This comes in handy if you need to upgrade your EC2 instance, or provision a new one for any reason. Again, <a href="http://docs.mongodb.org/ecosystem/platforms/amazon-ec2/">MongoDB recommends</a> an EBS-optimized EC2 instance with a <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html#EBSVolumeTypes_piops">Provisioned IOPS EBS volume</a>. So set up an EBS volume, and we&#39;ll be mounting it for MongoDB to use. It would make good sense to utilize Amazon S3 for static assets, but that&#39;s outside the scope of this article.</p>
-
-<h2 id="configure-security-group">Configure Security Group</h2>
-
-<p>You&#39;ll want to have SSH (port 22) open to any IP you might access it from. You&#39;ll also want HTTP and HTTPS ports accessible from any IP.</p>
-
-<h2 id="launch!">Launch!</h2>
-
-<p>You didn&#39;t upload your SSH key beforehand, did you? That&#39;s okay, I didn&#39;t figure that out until afterwards, either. So I generated a key, and copied my normal SSH key into the <code>authorized_keys</code> file afterwards. Assuming you&#39;ve placed the key in your <code>~/.ssh/</code> dir:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Make sure you restrict permissions for your private key file</span>
-</span><span class='line'>chmod 400 ~/.ssh/aws.pem
-</span><span class='line'><span class="c"># Add the downloaded AWS key to your key agent</span>
-</span><span class='line'>ssh-add ~/.ssh/aws.pem
-</span><span class='line'><span class="c"># If you don&#39;t have ssh-copy-id, you can install it via homebrew:</span>
-</span><span class='line'>brew install ssh-copy-id
-</span><span class='line'><span class="c"># Then, copy your normal SSH key to the EC2&#39;s ~/.ssh/authorized_keys file</span>
-</span><span class='line'>ssh-copy-id -i ~/.ssh/id_rsa.pub ubuntu@hostname
-</span></code></pre></td></tr></table></div></figure>
-
-<p>Now you can setup <a href="https://help.github.com/articles/using-ssh-agent-forwarding">ssh agent forwarding</a> for handy stuff like connecting to Github!</p>
-
-<h2 id="onwards:-install-and-configure-mongodb">Onwards: Install and Configure MongoDB</h2>
-
-<p>Again, this is all based on <a href="http://docs.mongodb.org/ecosystem/platforms/amazon-ec2/#deploy-mongodb-ec2">MongoDB&#39;s official documentation</a>. They recommend using separate EBS stores for your data, journal, and log, but I&#39;m just going to cover putting it all on a single EBS to keep things a little simpler.</p>
-
-<p>First, let&#39;s install MongoDB. These commands are directly from <a href="http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/">their tutorial</a>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Import MongoDB&#39;s GPG key used to ensure package authenticity</span>
-</span><span class='line'>sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-</span><span class='line'><span class="c"># Create a /etc/apt/sources.list.d/mongodb.list file</span>
-</span><span class='line'><span class="nb">echo</span> <span class="s1">&#39;deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen&#39;</span> | sudo tee /etc/apt/sources.list.d/mongodb.list
-</span><span class='line'><span class="c"># Update your repository</span>
-</span><span class='line'>sudo apt-get update
-</span><span class='line'><span class="c"># Install MongoDB</span>
-</span><span class='line'>sudo apt-get install mongodb-10gen
-</span></code></pre></td></tr></table></div></figure>
-
-<p>Now that that&#39;s done, let&#39;s configure it to use the EBS volume we setup earlier. The AWS console will say your volume is something like /dev/sdb, but the actual device name in Ubuntu will be something like /dev/xvdb.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Create the file system on your EBS volume. &lt;device name&gt; is your EBS path</span>
-</span><span class='line'><span class="c"># sudo mkfs -t ext4 &lt;device name&gt;</span>
-</span><span class='line'>sudo mkfs -t ext4 /dev/xvdb
-</span><span class='line'><span class="c"># Create a folder wherever you want to mount it</span>
-</span><span class='line'><span class="c"># mkdir &lt;mount point&gt;</span>
-</span><span class='line'>mkdir /database
-</span><span class='line'><span class="c"># Add an fstab entry so it gets mounted on system boot</span>
-</span><span class='line'><span class="nb">echo</span> <span class="s1">&#39;/dev/xvdb /database ext4 defaults,auto,noatime,noexec 0 0&#39;</span> | sudo tee -a /etc/fstab
-</span><span class='line'><span class="c"># Mount it</span>
-</span><span class='line'>sudo mount /dev/xvdb /database
-</span><span class='line'><span class="c"># Create directories for the actual data, logs, and journal</span>
-</span><span class='line'><span class="nb">cd</span> /database
-</span><span class='line'>mkdir data journal log
-</span><span class='line'><span class="c"># Set MongoDB to the owner of these directories</span>
-</span><span class='line'>sudo chown -R mongodb:mongodb /database
-</span><span class='line'><span class="c"># And link your journal</span>
-</span><span class='line'>ln -s /database/journal /database/data/journal
-</span></code></pre></td></tr></table></div></figure>
-
-<p>Now configure MongoDB to use these paths: <code>sudo nano /etc/mongodb.conf</code></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">dbpath</span> <span class="o">=</span> /database/data
-</span><span class='line'><span class="nv">logpath</span> <span class="o">=</span> /database/log/mongodb.log
-</span></code></pre></td></tr></table></div></figure>
-
-<h2 id="install-node">Install Node</h2>
-
-<p>See <a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint-elementary-os">the official wiki</a> for more information about installing Node.js on Ubuntu. Ubuntu&#39;s default Node package lags behind the latest stable release. If that&#39;s okay, then go ahead:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install nodejs
-</span><span class='line'><span class="c"># Due to a naming conflict, node was renamed to nodejs in apt</span>
-</span><span class='line'><span class="c"># So you&#39;ll need to create a symlink to use the command &#39;node&#39;</span>
-</span><span class='line'>ln -s /usr/bin/nodejs /usr/bin/node
-</span></code></pre></td></tr></table></div></figure>
-
-<p>But if you want to install the latest version of Node, you&#39;re gonna have to do this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get update
-</span><span class='line'>sudo apt-get install python-software-properties python g++ make
-</span><span class='line'>sudo apt-add-repository ppa:chris-lea/node.js
-</span><span class='line'>sudo apt-get update
-</span><span class='line'>sudo apt-get install nodejs
-</span><span class='line'>ln -s /usr/bin/nodejs /usr/bin/node
-</span></code></pre></td></tr></table></div></figure>
-
-<p>Listening on port 80 requires root privileges. Instead, Node will listen on port 3000, and we&#39;ll redirect requests from port 80 to there:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
-</span></code></pre></td></tr></table></div></figure>
-
-<p>Add the command (minus <code>sudo</code>) to your rc.local file to make sure this applies on boot as well: <code>sudo nano /etc/rc.local</code></p>
-
-<h2 id="keep-your-app-running-forever">Keep your app running forever</h2>
-
-<p>For this, we&#39;re going to use <a href="https://github.com/nodejitsu/forever">Forever</a> and <a href="http://upstart.ubuntu.com/">Upstart</a>. Forever is used in production at <a href="https://www.nodejitsu.com/">Nodejitsu</a>, and restarts your app if it crashes. Upstart registers your app as a service, starting it on boot and cleanly stopping it on shutdown. The configuration that follows is directly from <a href="https://www.exratione.com/2013/02/nodejs-and-forever-as-a-service-simple-upstart-and-init-scripts-for-ubuntu/">this awesome guide on exratione.com</a>.</p>
-
-<p>First, install Forever:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo npm install -g forever
-</span></code></pre></td></tr></table></div></figure>
-
-<p>Then, create the following Upstart configuration: <code>sudo nano /etc/init/myapp.conf</code></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># My App upstart config /etc/init/myapp.conf</span>
-</span><span class='line'>description <span class="s2">&quot;Startup script for My App using Forever&quot;</span>
-</span><span class='line'>
-</span><span class='line'>start on startup
-</span><span class='line'>stop on shutdown
-</span><span class='line'>
-</span><span class='line'><span class="c"># So that Upstart reports the pid of the Node.js process started by Forever</span>
-</span><span class='line'><span class="c"># rather than Forever&#39;s own pid</span>
-</span><span class='line'>expect fork
-</span><span class='line'>
-</span><span class='line'><span class="c"># Full path to the node binaries</span>
-</span><span class='line'>env <span class="nv">NODE_BIN_DIR</span><span class="o">=</span><span class="s2">&quot;/usr/bin/node&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Path for finding global NPM node_modules</span>
-</span><span class='line'>env <span class="nv">NODE_PATH</span><span class="o">=</span><span class="s2">&quot;/usr/lib/nodejs:/usr/lib/node_modules:/usr/share/javascript&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Directory containing My App</span>
-</span><span class='line'>env <span class="nv">APPLICATION_DIRECTORY</span><span class="o">=</span><span class="s2">&quot;/home/ubuntu/myapp&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Application javascript filename</span>
-</span><span class='line'>env <span class="nv">APPLICATION_START</span><span class="o">=</span><span class="s2">&quot;server.js&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Environment to run app as</span>
-</span><span class='line'>env <span class="nv">NODE_ENV</span><span class="o">=</span><span class="s2">&quot;production&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Log file</span>
-</span><span class='line'>env <span class="nv">LOG</span><span class="o">=</span><span class="s2">&quot;/var/log/chirp.log&quot;</span>
-</span><span class='line'>
-</span><span class='line'>script
-</span><span class='line'>  <span class="nv">PATH</span><span class="o">=</span><span class="nv">$NODE_BIN_DIR</span>:<span class="nv">$PATH</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nb">exec </span>forever --sourceDir <span class="nv">$APPLICATION_DIRECTORY</span> --append -l <span class="nv">$LOG</span> <span class="se">\</span>
-</span><span class='line'>    --minUptime 5000 --spinSleepTime 2000 start <span class="nv">$APPLICATION_START</span>
-</span><span class='line'>end script
-</span><span class='line'>
-</span><span class='line'>pre-stop script
-</span><span class='line'>  <span class="nv">PATH</span><span class="o">=</span><span class="nv">$NODE_BIN_DIR</span>:<span class="nv">$PATH</span>
-</span><span class='line'>  <span class="nb">exec </span>forever stop <span class="nv">$APPLICATION_START</span> &gt;&gt; <span class="nv">$LOG</span>
-</span><span class='line'>end script
-</span></code></pre></td></tr></table></div></figure>
-
-<p>Now you can start, restart, and stop your app like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo service myapp start
-</span><span class='line'>sudo service myapp restart
-</span><span class='line'>sudo service myapp stop
-</span></code></pre></td></tr></table></div></figure>
-
-<h2 id="ta-da!">Ta-Da!</h2>
-
-<p>Now your environment is ready to rock&#39;n&#39;roll—you just need to figure out a deployment methodology. Perhaps I&#39;ll cover an automated build/deployment process for a <abbr title="Mongo, Express, Angular, Node.js">MEAN</abbr> stack app next?</p>
-
-<p>Post a comment if you have any questions, and I&#39;ll be happy to do what I can to help.</p>
-]]></content>
-  </entry>
+<span class="categories">
   
-  <entry>
-    <title type="html"><![CDATA[Cloning an existing installation of Octopress]]></title>
-    <link href="http://kvcrawford.github.io/blog/2013/10/30/cloning-an-existing-installation-of-octopress/"/>
-    <updated>2013-10-30T14:16:00-07:00</updated>
-    <id>http://kvcrawford.github.io/blog/2013/10/30/cloning-an-existing-installation-of-octopress</id>
-    <content type="html"><![CDATA[<p>The way Octopress deploys to Github Pages is a little funky. When you setup your blog for deployment to Github Pages, a second copy of the repo is instantiated in <code>./_deploy</code>, and is checked out to the <code>master</code> branch.</p>
-
-<p>You create and edit posts in the <code>source</code> branch, in your project root. During deployment, your site gets generated, and the updates copied to <code>_deploy</code>. From there, a commit is made to <code>master</code>, and a git push is performed, updating the website.</p>
-
-<p>When you clone your blog to a different computer, you need to make sure it is setup in the same way, like so:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Assuming that you have your Ruby environment configured</span>
-</span><span class='line'><span class="nv">$ </span>git clone -b <span class="nb">source </span>git@github.com:username/username.github.io.git username.github.io
-</span><span class='line'><span class="nv">$ </span><span class="nb">cd </span>username.github.io
-</span><span class='line'><span class="nv">$ </span>git clone -b master git@github.com:username/username.github.io.git _deploy
-</span><span class='line'><span class="nv">$ </span>bundle install
-</span></code></pre></td></tr></table></div></figure>
-
-<p>Thank you to <a href="http://blog.zerosharp.com/clone-your-octopress-to-blog-from-two-places/">zerosharp.com</a> and <a href="http://code.dblock.org/octopress-setting-up-a-blog-and-contributing-to-an-existing-one">dblock.org</a> for helping me figure that one out.</p>
-]]></content>
-  </entry>
+    <a class='category' href='/blog/categories/angular/'>angular</a>, <a class='category' href='/blog/categories/architecture/'>architecture</a>, <a class='category' href='/blog/categories/frontend/'>frontend</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
   
-  <entry>
-    <title type="html"><![CDATA[Hello, World]]></title>
-    <link href="http://kvcrawford.github.io/blog/2013/09/20/hello-world/"/>
-    <updated>2013-09-20T08:21:00-07:00</updated>
-    <id>http://kvcrawford.github.io/blog/2013/09/20/hello-world</id>
-    <content type="html"><![CDATA[<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Well let&#39;s get started then, shall we?&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-]]></content>
-  </entry>
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
   
-</feed>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/02/09/introducing-ng-coffeeplate/" title="Previous Post: Introducing: ng-coffeeplate">&laquo; Introducing: ng-coffeeplate</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/06/20/architecting-maintainable-reusable-uis-in-angular/">Architecting Maintainable, Reusable UIs in Angular: A Case Study</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/09/introducing-ng-coffeeplate/">Introducing: Ng-coffeeplate</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/11/20/configuring-a-production-node-js-and-mongodb-environment-in-ubuntu-on-an-amazon-ec2-instance/">Configuring a Production Node.js and MongoDB Environment in Ubuntu on an Amazon EC2 Instance</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/30/cloning-an-existing-installation-of-octopress/">Cloning an Existing Installation of Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/20/hello-world/">Hello, World</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/kvcrawford">@kvcrawford</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'kvcrawford',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>My Pinboard</h1>
+  <ul id="pinboard_linkroll">Fetching linkroll...</ul>
+  <p><a href="http://pinboard.in/u:kvcrawford">My Pinboard Bookmarks &raquo;</a></p>
+</section>
+<script type="text/javascript">
+  var linkroll = 'pinboard_linkroll'; //id target for pinboard list
+  var pinboard_user = "kvcrawford"; //id target for pinboard list
+  var pinboard_count = 3; //id target for pinboard list
+  (function(){
+    var pinboardInit = document.createElement('script');
+    pinboardInit.type = 'text/javascript';
+    pinboardInit.async = true;
+    pinboardInit.src = '/javascripts/pinboard.js';
+    document.getElementsByTagName('head')[0].appendChild(pinboardInit);
+  })();
+</script>
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/100412605131936780000?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Kevin Crawford -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'kvcrawford';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://kvcrawford.github.io/blog/2015/06/20/architecting-maintainable-reusable-uis-in-angular/';
+        var disqus_url = 'http://kvcrawford.github.io/blog/2015/06/20/architecting-maintainable-reusable-uis-in-angular/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

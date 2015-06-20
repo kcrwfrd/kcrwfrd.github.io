@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Kevin Crawford, Software Engineer]]></title>
   <link href="http://kvcrawford.github.io/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://kvcrawford.github.io/"/>
-  <updated>2015-06-11T15:36:20-07:00</updated>
+  <updated>2015-06-20T13:31:18-07:00</updated>
   <id>http://kvcrawford.github.io/</id>
   <author>
     <name><![CDATA[Kevin Crawford]]></name>
@@ -12,6 +12,1203 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Architecting Maintainable, Reusable UIs in Angular: A Case Study]]></title>
+    <link href="http://kvcrawford.github.io/blog/2015/06/20/architecting-maintainable-reusable-uis-in-angular/"/>
+    <updated>2015-06-20T13:01:00-07:00</updated>
+    <id>http://kvcrawford.github.io/blog/2015/06/20/architecting-maintainable-reusable-uis-in-angular</id>
+    <content type="html"><![CDATA[<p>After spending substantial time working in-depth in Angular land, and with further influence from incursions into Flux &amp; React, I&#39;ve come to develop certain opinions on how to best architect non-trivial, data-driven UI flows in an Angular application.</p>
+
+<p>What follows is a case study of a real-world UI problem, solved with the guidance of well-established principles and patterns in software design.</p>
+
+<p><a href="https://github.com/kvcrawford/ng-permutation-builder">Read the code on Github</a> &bull; <a href="http://kvcrawford.github.io/ng-permutation-builder/">See the live demo</a></p>
+
+<h2 id="the-user-story">The User Story</h2>
+
+<p>Jill works for <em>The Widget Factory</em>, a company in the business of making widgets. Oftentimes, she wants to be able to test how slightly different widgets perform against each other.</p>
+
+<p>Rather than waste time creating the otherwise-same widget several times over, she would like to be able to quickly generate the different permutations, and be done with it.</p>
+
+<!-- more -->
+
+<h2 id="some-guiding-principles">Some Guiding Principles</h2>
+
+<p>Before we begin, I&#39;d like to highlight some design principles that will guide our implementation. While the purpose of this article is to <em>demonstrate</em> rather than explain these topics in detail, I&#39;ve included links for further reading.</p>
+
+<ul>
+<li>The Single Responsibility Principle (SRP) <sup><a href="http://en.wikipedia.org/wiki/Single_responsibility_principle">1</a></sup> <sup><a href="http://www.objectmentor.com/resources/articles/srp.pdf">2</a></sup></li>
+<li>Separation of Concerns (SoC) <sup><a href="http://en.wikipedia.org/wiki/Separation_of_concerns">3</a></sup></li>
+<li>Don&#39;t Repeat Yourself (DRY) <sup><a href="http://en.wikipedia.org/wiki/Don%27t_repeat_yourself">4</a></sup></li>
+</ul>
+
+<p>We&#39;ll proceed iteratively. First, make it work—then, refactor.</p>
+
+<h2 id="first:-how-do-we-generate-permutations?">First: how do we generate permutations?</h2>
+
+<p>TDD for this type of stuff is a must. Consider this object of <em>permutable attributes</em>:</p>
+<div class="highlight"><pre><code class="coffeescript"><span class="nv">permutable_attributes =</span>
+  <span class="nv">name: </span><span class="p">[</span><span class="s">&#39;Foobar&#39;</span><span class="p">,</span> <span class="s">&#39;Bizbat&#39;</span><span class="p">]</span>
+  <span class="nv">description: </span><span class="p">[</span><span class="s">&#39;I pity the foo.&#39;</span><span class="p">,</span> <span class="s">&#39;Lorem ipsum.&#39;</span><span class="p">]</span>
+</code></pre></div>
+<p>From this, we would generate 4 possible permutations:</p>
+<div class="highlight"><pre><code class="coffeescript"><span class="p">[</span>
+  <span class="nv">name: </span><span class="s">&#39;Foobar&#39;</span>
+  <span class="nv">description: </span><span class="s">&#39;I pity the foo.&#39;</span>
+<span class="p">,</span>
+  <span class="nv">name: </span><span class="s">&#39;Foobar&#39;</span>
+  <span class="nv">description: </span><span class="s">&#39;Lorem ipsum.&#39;</span>
+<span class="p">,</span>
+  <span class="nv">name: </span><span class="s">&#39;Bizbat&#39;</span>
+  <span class="nv">description: </span><span class="s">&#39;I pity the foo.&#39;</span>
+<span class="p">,</span>
+  <span class="nv">name: </span><span class="s">&#39;Bizbat&#39;</span>
+  <span class="nv">description: </span><span class="s">&#39;Lorem ipsum.&#39;</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>Let&#39;s expand on those expectations: <a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/permutation/test/permutation-factory.spec.coffee">permutation-factory.spec.coffee</a></p>
+<div class="highlight"><pre><code class="coffeescript"><span class="nx">describe</span> <span class="s">&#39;permutationFactory:&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+  <span class="nv">permutationFactory = </span><span class="kc">null</span>
+
+  <span class="nx">beforeEach</span> <span class="nx">module</span> <span class="s">&#39;app.permutation&#39;</span>
+
+  <span class="nx">beforeEach</span> <span class="nx">inject</span> <span class="nf">(</span>
+<span class="nf">    _permutationFactory_</span>
+<span class="nf">  ) -&gt;</span>
+    <span class="nv">permutationFactory = </span><span class="nx">_permutationFactory_</span>
+
+  <span class="nx">describe</span> <span class="s">&#39;permute:&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+    <span class="c1"># Expected result for 2*2</span>
+    <span class="nv">result_2x2 = </span><span class="p">[</span>
+      <span class="nv">name: </span><span class="s">&#39;foo&#39;</span>
+      <span class="nv">attr: </span><span class="s">&#39;biz&#39;</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s">&#39;foo&#39;</span>
+      <span class="nv">attr: </span><span class="s">&#39;bat&#39;</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s">&#39;bar&#39;</span>
+      <span class="nv">attr: </span><span class="s">&#39;biz&#39;</span>
+    <span class="p">,</span>
+      <span class="nv">name: </span><span class="s">&#39;bar&#39;</span>
+      <span class="nv">attr: </span><span class="s">&#39;bat&#39;</span>
+    <span class="p">]</span>
+
+    <span class="nx">it</span> <span class="s">&#39;Should generate 4 permutations from 2*2 attributes.&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+      <span class="nv">permutable_attributes =</span>
+        <span class="nv">name: </span><span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="s">&#39;bar&#39;</span><span class="p">]</span>
+        <span class="nv">attr: </span><span class="p">[</span><span class="s">&#39;biz&#39;</span><span class="p">,</span> <span class="s">&#39;bat&#39;</span><span class="p">]</span>
+
+      <span class="nv">permutations = </span><span class="nx">permutationFactory</span><span class="p">.</span><span class="nx">permute</span> <span class="nx">permutable_attributes</span>
+
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">permutations</span><span class="p">).</span><span class="nx">toEqual</span> <span class="nx">result_2x2</span>
+
+    <span class="nx">it</span> <span class="s">&#39;Should ignore attributes without any values.&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+      <span class="c1"># Some attributes won&#39;t be required--we want to skip those.</span>
+
+      <span class="nv">permutable_attributes =</span>
+        <span class="nv">name: </span><span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="s">&#39;bar&#39;</span><span class="p">]</span>
+        <span class="nv">empty: </span><span class="p">[]</span>
+        <span class="nv">attr: </span><span class="p">[</span><span class="s">&#39;biz&#39;</span><span class="p">,</span> <span class="s">&#39;bat&#39;</span><span class="p">]</span>
+
+      <span class="nv">permutations = </span><span class="nx">permutationFactory</span><span class="p">.</span><span class="nx">permute</span> <span class="nx">permutable_attributes</span>
+
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">permutations</span><span class="p">).</span><span class="nx">toEqual</span> <span class="nx">result_2x2</span>
+
+    <span class="nx">it</span> <span class="s">&#39;Should ignore empty attributes at the end of the object.&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+      <span class="nv">permutable_attributes =</span>
+        <span class="nv">name: </span><span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="s">&#39;bar&#39;</span><span class="p">]</span>
+        <span class="nv">attr: </span><span class="p">[</span><span class="s">&#39;biz&#39;</span><span class="p">,</span> <span class="s">&#39;bat&#39;</span><span class="p">]</span>
+        <span class="nv">empty: </span><span class="p">[]</span>
+
+      <span class="nv">permutations = </span><span class="nx">permutationFactory</span><span class="p">.</span><span class="nx">permute</span> <span class="nx">permutable_attributes</span>
+
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">permutations</span><span class="p">).</span><span class="nx">toEqual</span> <span class="nx">result_2x2</span>
+
+    <span class="nx">it</span> <span class="s">&#39;Should generate 6 permutations from 2*1*0*3 attributes.&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+      <span class="nv">permutable_attributes =</span>
+        <span class="nv">name: </span><span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="s">&#39;bar&#39;</span><span class="p">]</span>
+        <span class="nv">type: </span><span class="p">[</span><span class="s">&#39;biz&#39;</span><span class="p">]</span>
+        <span class="nv">empty: </span><span class="p">[]</span>
+        <span class="nv">desc: </span><span class="p">[</span><span class="s">&#39;bing&#39;</span><span class="p">,</span> <span class="s">&#39;bang&#39;</span><span class="p">,</span> <span class="s">&#39;boom&#39;</span><span class="p">]</span>
+
+      <span class="nv">permutations = </span><span class="nx">permutationFactory</span><span class="p">.</span><span class="nx">permute</span> <span class="nx">permutable_attributes</span>
+
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">permutations</span><span class="p">).</span><span class="nx">toEqual</span> <span class="p">[</span>
+        <span class="nv">name: </span><span class="s">&#39;foo&#39;</span>
+        <span class="nv">type: </span><span class="s">&#39;biz&#39;</span>
+        <span class="nv">desc: </span><span class="s">&#39;bing&#39;</span>
+      <span class="p">,</span>
+        <span class="nv">name: </span><span class="s">&#39;foo&#39;</span>
+        <span class="nv">type: </span><span class="s">&#39;biz&#39;</span>
+        <span class="nv">desc: </span><span class="s">&#39;bang&#39;</span>
+      <span class="p">,</span>
+        <span class="nv">name: </span><span class="s">&#39;foo&#39;</span>
+        <span class="nv">type: </span><span class="s">&#39;biz&#39;</span>
+        <span class="nv">desc: </span><span class="s">&#39;boom&#39;</span>
+      <span class="p">,</span>
+        <span class="nv">name: </span><span class="s">&#39;bar&#39;</span>
+        <span class="nv">type: </span><span class="s">&#39;biz&#39;</span>
+        <span class="nv">desc: </span><span class="s">&#39;bing&#39;</span>
+      <span class="p">,</span>
+        <span class="nv">name: </span><span class="s">&#39;bar&#39;</span>
+        <span class="nv">type: </span><span class="s">&#39;biz&#39;</span>
+        <span class="nv">desc: </span><span class="s">&#39;bang&#39;</span>
+      <span class="p">,</span>
+        <span class="nv">name: </span><span class="s">&#39;bar&#39;</span>
+        <span class="nv">type: </span><span class="s">&#39;biz&#39;</span>
+        <span class="nv">desc: </span><span class="s">&#39;boom&#39;</span>
+      <span class="p">]</span>
+
+    <span class="nx">it</span> <span class="s">&#39;Should invoke an optional callback for each permutation&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+      <span class="nv">callback = </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span> <span class="s">&#39;callback&#39;</span>
+
+      <span class="nv">permutable_attributes =</span>
+        <span class="nv">name: </span><span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">,</span> <span class="s">&#39;bar&#39;</span><span class="p">]</span>
+        <span class="nv">attr: </span><span class="p">[</span><span class="s">&#39;biz&#39;</span><span class="p">,</span> <span class="s">&#39;bat&#39;</span><span class="p">]</span>
+
+      <span class="nv">permutations = </span><span class="nx">permutationFactory</span><span class="p">.</span><span class="nx">permute</span> <span class="nx">permutable_attributes</span><span class="p">,</span> <span class="nx">callback</span>
+
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">callback</span><span class="p">.</span><span class="nx">calls</span><span class="p">.</span><span class="nx">count</span><span class="p">()).</span><span class="nx">toBe</span> <span class="mi">4</span>
+
+      <span class="k">for</span> <span class="nx">i</span> <span class="k">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">..</span><span class="mi">3</span><span class="p">]</span>
+        <span class="nx">expect</span><span class="p">(</span><span class="nx">callback</span><span class="p">.</span><span class="nx">calls</span><span class="p">.</span><span class="nx">argsFor</span><span class="p">(</span><span class="nx">i</span><span class="p">)).</span><span class="nx">toEqual</span> <span class="p">[</span><span class="nx">result_2x2</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span>
+</code></pre></div>
+<p>With tests in place, <em>now</em> we can do our implementation: <a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/permutation/service/permutation-factory.coffee">permutation-factory.coffee</a></p>
+<div class="highlight"><pre><code class="coffeescript"><span class="cm">###</span>
+<span class="cm">@name permutationFactory</span>
+<span class="cm">@description</span>
+<span class="cm">Utility service for generating permutations of a resource.</span>
+<span class="cm">###</span>
+
+<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span> <span class="s">&#39;app.permutation&#39;</span>
+<span class="p">.</span><span class="nx">factory</span> <span class="s">&#39;permutationFactory&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+
+  <span class="err">#</span><span class="c1">##</span>
+  <span class="nx">@name</span> <span class="nx">permute</span>
+  <span class="nx">@description</span>
+  <span class="nx">Generates</span> <span class="nx">permutations</span> <span class="nx">from</span> <span class="nx">a</span> <span class="nx">permutable_attributes</span> <span class="nx">object</span><span class="p">.</span>
+
+  <span class="nx">@param</span> <span class="p">{</span><span class="nb">Object</span><span class="p">}</span> <span class="nx">permutable_attributes</span>
+  <span class="nx">@param</span> <span class="p">{[</span><span class="nx">Callback</span><span class="p">]}</span> <span class="nx">callback</span> <span class="o">-</span> <span class="nx">Optional</span><span class="p">,</span> <span class="nx">invoked</span> <span class="k">for</span> <span class="nx">each</span> <span class="nx">permutation</span>
+
+  <span class="nx">@callback</span> <span class="nx">callback</span>
+  <span class="nx">@param</span> <span class="p">{</span><span class="nb">Object</span><span class="p">}</span> <span class="nx">permutation</span>
+
+  <span class="nx">@returns</span> <span class="p">{</span><span class="nb">Array</span><span class="p">}</span> <span class="o">-</span> <span class="nx">Collection</span> <span class="k">of</span> <span class="nx">permutations</span>
+
+  <span class="nx">@example</span>
+  <span class="o">```</span><span class="nx">coffeescript</span>
+  <span class="nv">permutations = </span><span class="nx">permutationFactory</span><span class="p">.</span><span class="nx">permute</span>
+    <span class="nv">name: </span><span class="p">[</span><span class="s">&#39;Foobar&#39;</span><span class="p">,</span> <span class="s">&#39;Bizbat&#39;</span><span class="p">]</span>
+    <span class="nv">description: </span><span class="p">[</span><span class="s">&#39;I pity the foo.&#39;</span><span class="p">,</span> <span class="s">&#39;Lorem ipsum.&#39;</span><span class="p">]</span>
+</code></pre></div>
+<p>###</p>
+
+<p>permute: (permutable_attributes, callback) -&gt;<br>
+    permutations = []</p>
+<div class="highlight"><pre><code class="text">recurse = (keys, payload = {}, position = 0) -&gt;
+  # We&#39;ve finished constructing the permutation, exit call stack
+  if position is keys.length
+    permutation = _.clone payload
+    callback? permutation
+    permutations.push permutation
+
+    return
+
+  # Grab the current key
+  key = keys[position]
+
+  # There are no values for this attribute, skip it
+  if permutable_attributes[key].length is 0
+    recurse keys, payload, position + 1
+
+  # Otherwise, recurse for each possible value of this attribute
+  else
+    for value in permutable_attributes[key]
+      payload[key] = value
+
+      recurse keys, payload, position + 1
+
+recurse Object.keys permutable_attributes
+
+return permutations
+</code></pre></div><div class="highlight"><pre><code class="text">With our `permute` algorithm complete, now we can wire up a UI.
+
+## A First Iteration
+One of the most common pitfalls seen in Angular apps are bloated controllers. It can be tempting to wedge bits of logic here and there, as it&#39;s easy at the time. Unfortunately, the controller quickly turns into a tangled mess. Consider the following implementation of our permutation builder:
+
+[spaghetti-widget-builder-controller.coffee](https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/widget/controller/spaghetti-widget-builder-controller.coffee)
+
+```coffeescript
+angular.module &#39;app.widget&#39;
+.controller &#39;SpaghettiWidgetBuilderController&#39;, (
+  $scope
+  $state
+  permutationFactory
+  widgetFactory
+  widgetStore
+) -&gt;
+  # Placeholder object to hold references for our ngForm instances
+  $scope.forms = {}
+
+  ###
+  @name initialize
+  @description
+  Resets state, called if the user hits the reset button.
+
+  The `do` immediately invokes our method to initialize state when
+  controller first loads.
+  ###
+
+  do $scope.initialize = -&gt;
+    $scope.permutations = []
+
+    $scope.permutable_attributes =
+      name: []
+      description: []
+
+    # For binding to the form with ngModel
+    $scope.attributes =
+      name: &#39;&#39;
+      description: &#39;&#39;
+
+  # We need to specify which fields are required. We can&#39;t just use a
+  # &#39;required&#39; attribute on the input tag, because it will no longer
+  # be required once at least 1 value has been entered.
+  $scope.required =
+    name: true
+    description: false
+
+  ###
+  @name buildPermutations
+  @description
+  Private function called every time an attribute is added or removed.
+  ###
+
+  buildPermutations = -&gt;
+    $scope.permutations.length = 0
+
+    # At least we have the `permutationFactory` and `widgetFactory`,
+    # which are more obvious as candidates for separate services.
+    permutationFactory.permute $scope.permutable_attributes, (permutation) -&gt;
+      if widgetFactory.validate permutation
+        $scope.permutations.push permutation
+
+  ###
+  @name createPermutations
+  @description
+  Persists the permutations and redirects to home page.
+  ###
+
+  $scope.createPermutations = -&gt;
+    widgetStore.addWidgets $scope.permutations
+
+    $state.go &#39;home&#39;
+
+  ###
+  @name addAttribute
+  @description
+  Adds an attribute to generate permutations from, then empties the form input.
+
+  @param {String} key - Attribute name
+  ###
+
+  $scope.addAttribute = (key) -&gt;
+    # Tokenize the value
+    $scope.permutable_attributes[key].push $scope.attributes[key]
+
+    # Then empty the form input
+    $scope.attributes[key] = &#39;&#39;
+
+    buildPermutations()
+
+  ###
+  @name isRequired
+  @description
+  Used with ng-required, determines if at least 1 value has been entered or not.
+  This view logic would fit much more nicely in a directive.
+
+  @param {String} key - Attribute name
+
+  @returns {Boolean}
+  ###
+
+  $scope.isRequired = (key) -&gt;
+    return (
+      $scope.required[key] and
+      $scope.permutable_attributes[key].length is 0
+    )
+
+  ###
+  @name isDisabled
+  @description
+  We don&#39;t want the submit button to be enabled if input is empty.
+  Also a good candidate for inclusion in a directive.
+
+  @param {String} key - Attribute name
+
+  @returns {Boolean}
+  ###
+
+  $scope.isDisabled = (key) -&gt;
+    return _.isEmpty $scope.attributes[key]
+
+  ###
+  @name removeAttribute
+  @description
+  Removes a permutable attribute, then re-generates permutations.
+
+  @param {String} key - Attribute name
+  @param {Integer} index - Index in the permutable attribute array.
+  ###
+
+  $scope.removeAttribute = (key, index) -&gt;
+    $scope.permutable_attributes[key].splice index, 1
+
+    buildPermutations()
+</code></pre></div>
+<p><a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/widget/spaghetti-widget-builder.jade">spaghetti-widget-builder.jade</a></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+</pre></td><td class='code'><pre><code class='jade'><span class='line'><span class="err">&lt;</span><span class="nt">br</span>&gt;
+</span><span class='line'><span class="err">&lt;</span><span class="nt">br</span>&gt;
+</span><span class='line'><span class="c">//- Can you spot all the repeating markup? Just imagine if we had more fields!&lt;br&gt;</span>
+</span><span class='line'><span class="nc">.container-fluid</span>&lt;br&gt;
+</span><span class='line'>  <span class="nc">.row</span>&lt;br&gt;
+</span><span class='line'>    <span class="nc">.col-md-12</span>&lt;br&gt;
+</span><span class='line'>      <span class="nt">p</span><span class="nc">.lead</span> Let&amp;#39;s build some widgets.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span>&gt;.row&lt;br&gt;
+</span><span class='line'>    <span class="nc">.col-lg-6.col-md-8.col-sm-6</span>&lt;br&gt;
+</span><span class='line'>      <span class="nt">form</span><span class="nc">.form-group</span>(<span class="err">&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>        <span class="na">ng-submit =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">addAttribute</span><span class="err">(&amp;#</span><span class="na">39</span><span class="err">;</span><span class="na">name</span><span class="err">&amp;#</span><span class="na">39</span><span class="err">;</span>)&amp;quot;&lt;br&gt;
+</span><span class='line'>        <span class="nt">name</span> = &amp;quot;forms.name&amp;quot;&lt;br&gt;
+</span><span class='line'>        <span class="nt">ng-class</span> = &amp;quot;{ &amp;#39;has-error&amp;#39;: forms.name.$invalid &amp;amp;&amp;amp; forms.name.value.$touched }&amp;quot;&lt;br&gt;
+</span><span class='line'>      <span class="err">)&lt;</span><span class="nt">br</span>&gt;
+</span><span class='line'>        <span class="nt">label</span><span class="nc">.control-label</span>(<span class="err">&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>          <span class="na">for =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">widget_name</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>        ) Name*&lt;/p&gt;
+</span><span class='line'><span class="err">&lt;</span><span class="nt">div</span> class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    .input-group
+</span><span class='line'>      <span class="nt">input</span><span class="nc">.form-control</span>(
+</span><span class='line'>        <span class="na">id =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">widget_name</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>        <span class="na">name =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">value</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>        <span class="na">type =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">text</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>        <span class="na">ng-model =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">attributes</span><span class="err">.</span><span class="na">name</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>        <span class="na">ng-required =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">isRequired</span><span class="err">(&amp;#</span><span class="na">39</span><span class="err">;</span><span class="na">name</span><span class="err">&amp;#</span><span class="na">39</span><span class="err">;</span>)&amp;quot;
+</span><span class='line'>      <span class="err">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nc">.input-group-btn</span>
+</span><span class='line'>        <span class="nt">button</span><span class="nc">.btn.btn-default</span>(
+</span><span class='line'>          <span class="na">type =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">submit</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>          <span class="na">ng-disabled =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">isDisabled</span><span class="err">(&amp;#</span><span class="na">39</span><span class="err">;</span><span class="na">name</span><span class="err">&amp;#</span><span class="na">39</span><span class="err">;</span>)&amp;quot;
+</span><span class='line'>        <span class="err">) </span><span class="nt">Add</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">form</span><span class="nc">.form-group</span>(
+</span><span class='line'>    <span class="na">ng-submit =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">addAttribute</span><span class="err">(&amp;#</span><span class="na">39</span><span class="err">;</span><span class="na">description</span><span class="err">&amp;#</span><span class="na">39</span><span class="err">;</span>)&amp;quot;
+</span><span class='line'>    <span class="nt">name</span> = &amp;quot;forms.description&amp;quot;
+</span><span class='line'>    <span class="nt">ng-class</span> = &amp;quot;{ &amp;#39;has-error&amp;#39;: forms.description.$invalid &amp;amp;&amp;amp; forms.description.value.$touched }&amp;quot;
+</span><span class='line'>  <span class="err">)</span>
+</span><span class='line'>    <span class="nt">label</span><span class="nc">.control-label</span>(
+</span><span class='line'>      <span class="na">for =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">widget_description</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>    ) Description
+</span><span class='line'>
+</span><span class='line'>    <span class="nc">.input-group</span>
+</span><span class='line'>      <span class="nt">input</span><span class="nc">.form-control</span>(
+</span><span class='line'>        <span class="na">id =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">widget_description</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>        <span class="na">name =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">value</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>        <span class="na">type =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">text</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>        <span class="na">ng-model =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">attributes</span><span class="err">.</span><span class="na">description</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>        <span class="na">ng-required =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">isRequired</span><span class="err">(&amp;#</span><span class="na">39</span><span class="err">;</span><span class="na">description</span><span class="err">&amp;#</span><span class="na">39</span><span class="err">;</span>)&amp;quot;
+</span><span class='line'>      <span class="err">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nc">.input-group-btn</span>
+</span><span class='line'>        <span class="nt">button</span><span class="nc">.btn.btn-default</span>(
+</span><span class='line'>          <span class="na">type =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">submit</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>          <span class="na">ng-disabled =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">isDisabled</span><span class="err">(&amp;#</span><span class="na">39</span><span class="err">;</span><span class="na">description</span><span class="err">&amp;#</span><span class="na">39</span><span class="err">;</span>)&amp;quot;
+</span><span class='line'>        <span class="err">) </span><span class="nt">Add</span>
+</span><span class='line'>
+</span><span class='line'><span class="nc">.col-lg-4.col-md-4.col-sm-6</span>
+</span><span class='line'>  <span class="nc">.panel.panel-default</span>
+</span><span class='line'>    <span class="nc">.panel-heading</span>
+</span><span class='line'>        <span class="nt">h4</span><span class="nc">.panel-title</span> {{permutations.length}} Widgets Built
+</span><span class='line'>
+</span><span class='line'>    <span class="nc">.panel-body</span>
+</span><span class='line'>      <span class="nc">.panel.panel-default</span>
+</span><span class='line'>        <span class="nc">.panel-heading</span>
+</span><span class='line'>          <span class="nt">strong</span> Name ({{permutable_attributes.name.length}})
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">ul</span><span class="nc">.list-group</span>
+</span><span class='line'>          <span class="nt">li</span><span class="nc">.list-group-item</span>(
+</span><span class='line'>            <span class="na">ng-repeat =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">name</span> <span class="na">in</span> <span class="na">permutable_attributes</span><span class="err">.</span><span class="na">name</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>          )
+</span><span class='line'>            <span class="nt">span</span> {{name}}
+</span><span class='line'>            <span class="nt">button</span><span class="nc">.btn.close</span>(
+</span><span class='line'>              <span class="na">ng-click =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">removeAttribute</span><span class="err">(&amp;#</span><span class="na">39</span><span class="err">;</span><span class="na">name</span><span class="err">&amp;#</span><span class="na">39</span><span class="err">;,</span> <span class="err">$</span><span class="na">index</span>)&amp;quot;
+</span><span class='line'>            <span class="err">) &amp;</span><span class="nt">amp</span>;times;
+</span><span class='line'>
+</span><span class='line'>      <span class="nc">.panel.panel-default</span>
+</span><span class='line'>        <span class="nc">.panel-heading</span>
+</span><span class='line'>          <span class="nt">strong</span> Description ({{permutable_attributes.description.length}})
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">ul</span><span class="nc">.list-group</span>
+</span><span class='line'>          <span class="nt">li</span><span class="nc">.list-group-item</span>(
+</span><span class='line'>            <span class="na">ng-repeat =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">description</span> <span class="na">in</span> <span class="na">permutable_attributes</span><span class="err">.</span><span class="na">description</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>          )
+</span><span class='line'>            <span class="nt">span</span> {{description}}
+</span><span class='line'>            <span class="nt">button</span><span class="nc">.btn.close</span>(
+</span><span class='line'>              <span class="na">ng-click =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">removeAttribute</span><span class="err">(&amp;#</span><span class="na">39</span><span class="err">;</span><span class="na">description</span><span class="err">&amp;#</span><span class="na">39</span><span class="err">;,</span> <span class="err">$</span><span class="na">index</span>)&amp;quot;
+</span><span class='line'>            <span class="err">) &amp;</span><span class="nt">amp</span>;times;
+</span><span class='line'>
+</span><span class='line'>    <span class="nc">.panel-footer</span>
+</span><span class='line'>      <span class="nc">.btn-group</span>
+</span><span class='line'>        <span class="nt">button</span><span class="nc">.btn.btn-primary</span>(
+</span><span class='line'>          <span class="na">type =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">button</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>          <span class="na">ng-click =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">createPermutations</span><span class="err">(</span>)&amp;quot;
+</span><span class='line'>          <span class="nt">ng-disabled</span> = &amp;quot;permutations.length === 0&amp;quot;
+</span><span class='line'>        <span class="err">) </span><span class="nt">Submit</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">button</span><span class="nc">.btn.btn-default</span>(
+</span><span class='line'>          <span class="na">type =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">button</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>          <span class="na">ng-click =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">initialize</span><span class="err">(</span>)&amp;quot;
+</span><span class='line'>          <span class="nt">ng-disabled</span> = &amp;quot;permutations.length === 0&amp;quot;
+</span><span class='line'>        <span class="err">) </span><span class="nt">Reset</span>
+</span><span class='line'><span class="err">&lt;</span><span class="c">/code&gt;&lt;/pre&gt;&lt;/div&gt;</span>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span>&gt;&lt;br&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>It works! Cool! But, there are a few problems here:</p>
+
+<ul>
+<li>There&#39;s poor separation of concerns: view logic and state (<code>isRequired</code>, <code>isDisabled</code>) are intermingled with business logic and state.</li>
+<li>What if we want to add new features, like permutable images? Or videos? This controller and template will keep getting bigger.</li>
+<li>What if we want to add an additional step, to review the permutations we&#39;ve generated before saving them? Having the data model so tightly coupled to the controller becomes problematic.</li>
+<li>What we have isn&#39;t very reusable. What if we want to create another permutation builder for <em>Gadgets</em>?</li>
+</ul>
+
+<p><em>Note that we still have the <a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/permutation/service/permutation-factory.coffee">permutationFactory</a> and <a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/widget/service/widget-factory.coffee">widgetFactory</a>, which were more obvious candidates for separate services.</em></p>
+
+<h2 id="teasing-out-the-layers">Teasing Out The Layers</h2>
+
+<p>By isolating our concerns into separate layers, we can create something that is both easier to maintain <em>and</em> reusable. There are two modes of thinking that I like to employ:</p>
+
+<h3 id="1.-think-purely-in-terms-of-business-logic-and-state">1. Think purely in terms of business logic and state</h3>
+
+<p>Without even considering a UI, how would you describe the state of our permutation builder? How would you design an API to manipulate that state?</p>
+
+<p>Consider <a href="https://facebook.github.io/flux/docs/overview.html#content">Flux</a>&#39;s idea of a store:</p>
+
+<blockquote>
+<p>Stores contain the application state and logic. Their role is somewhat similar to a model in a traditional MVC, but they manage the state of many objects — they do not represent a single record of data like ORM models do. Nor are they the same as Backbone&#39;s collections. More than simply managing a collection of ORM-style objects, stores manage the application state for a particular domain within the application.</p>
+</blockquote>
+
+<p>In an Angular app, we can implement something similar with a service, isolating the business logic and state for our permutation builder. This gives us a number of advantages:</p>
+
+<ul>
+<li>It&#39;s easier to test,</li>
+<li>It becomes easier to reuse and extend, and</li>
+<li>We avoid controller bloat, by properly isolating our concerns.</li>
+</ul>
+
+<p><a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/permutation/service/permutation-builder-service.coffee">permutation-builder-service.coffee</a></p>
+<div class="highlight"><pre><code class="coffeescript"><span class="cm">###</span>
+<span class="cm">@name PermutationBuilderService</span>
+<span class="cm">@description</span>
+<span class="cm">A base class that can be extended for use with different permutable resources.</span>
+<span class="cm">###</span>
+
+<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span> <span class="s">&#39;app.permutation&#39;</span>
+<span class="p">.</span><span class="nx">factory</span> <span class="s">&#39;PermutationBuilderService&#39;</span><span class="p">,</span> <span class="nf">(</span>
+<span class="nf">  permutationFactory</span>
+<span class="nf">) -&gt;</span>
+  <span class="k">class</span> <span class="nx">PermutationBuilderService</span>
+    <span class="nv">constructor: </span><span class="nf">-&gt;</span>
+      <span class="nx">@initialize</span><span class="p">()</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name initialize</span>
+<span class="cm">    @description</span>
+<span class="cm">    Method used to reset service to an empty state.</span>
+<span class="cm">    Override this method to define attributes for a permutable resource.</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+      <span class="c1"># Regular attributes that get added to each permutation</span>
+      <span class="vi">@attributes = </span><span class="p">{}</span>
+
+      <span class="c1"># Permutable attributes</span>
+      <span class="vi">@permutable_attributes = </span><span class="p">{}</span>
+
+      <span class="c1"># Collection of permutations</span>
+      <span class="vi">@permutations = </span><span class="p">[]</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name addAttribute</span>
+<span class="cm">    @description</span>
+<span class="cm">    Adds a permutable attribute</span>
+
+<span class="cm">    @param {String} key - Name of attribute</span>
+<span class="cm">    @param {String|Number|Object|Array} value - Can be of any type</span>
+
+<span class="cm">    @returns {Boolean} Whether attribute was added successfully or not.</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">addAttribute: </span><span class="nf">(key, value) -&gt;</span>
+      <span class="nv">bucket = </span><span class="nx">@permutable_attributes</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+
+      <span class="k">throw</span> <span class="nb">Error</span> <span class="s">&quot;Invalid key: &#39;</span><span class="si">#{</span><span class="nx">key</span><span class="si">}</span><span class="s">&#39;&quot;</span> <span class="k">unless</span> <span class="nx">bucket</span><span class="o">?</span>
+
+      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">contains</span> <span class="nx">bucket</span><span class="p">,</span> <span class="nx">value</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span> <span class="s">&quot;&#39;</span><span class="si">#{</span><span class="nx">value</span><span class="si">}</span><span class="s">&#39; already entered.&quot;</span>
+
+        <span class="k">return</span> <span class="kc">false</span>
+
+      <span class="c1"># Add the value to permute against</span>
+      <span class="nx">bucket</span><span class="p">.</span><span class="nx">push</span> <span class="nx">value</span>
+
+      <span class="c1"># And generate the permutations</span>
+      <span class="nx">@buildPermutations</span><span class="p">()</span>
+
+      <span class="k">return</span> <span class="kc">true</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name buildPermutations</span>
+<span class="cm">    @description</span>
+<span class="cm">    Builds permutations of the resource.</span>
+
+<span class="cm">    @returns {Array} Collection of permutations</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">buildPermutations: </span><span class="nf">-&gt;</span>
+      <span class="c1"># Empty our collection of permutations from previous runs</span>
+      <span class="vi">@permutations.length = </span><span class="mi">0</span>
+
+      <span class="nx">permutationFactory</span><span class="p">.</span><span class="nx">permute</span> <span class="nx">@permutable_attributes</span><span class="p">,</span> <span class="nf">(permutation) =&gt;</span>
+        <span class="c1"># Extend common attributes onto each permutation</span>
+        <span class="nv">resource = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">permutation</span><span class="p">,</span> <span class="nx">@attributes</span>
+
+        <span class="nx">@permutations</span><span class="p">.</span><span class="nx">push</span> <span class="nx">resource</span>
+
+      <span class="k">return</span> <span class="nx">@permutations</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name createPermutations</span>
+<span class="cm">    @description</span>
+<span class="cm">    Abstract method. Override to define how a permutable resource gets persisted.</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">createPermutations: </span><span class="nf">-&gt;</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name removeAttribute</span>
+<span class="cm">    @description</span>
+<span class="cm">    Removes a permutable attribute by index</span>
+
+<span class="cm">    @param {String} key - Attribute name</span>
+<span class="cm">    @param {Integer} index - Index of value in the permutable attribute array.</span>
+
+<span class="cm">    @returns {Boolean} - true if item successfully removed</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">removeAttribute: </span><span class="nf">(key, index) -&gt;</span>
+      <span class="nv">bucket = </span><span class="nx">@permutable_attributes</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+
+      <span class="k">throw</span> <span class="nb">Error</span> <span class="s">&quot;Invalid key: &#39;</span><span class="si">#{</span><span class="nx">key</span><span class="si">}</span><span class="s">&#39;&quot;</span> <span class="k">unless</span> <span class="nx">bucket</span><span class="o">?</span>
+
+      <span class="nv">removed = </span><span class="nx">bucket</span><span class="p">.</span><span class="nx">splice</span> <span class="nx">index</span><span class="p">,</span> <span class="mi">1</span>
+
+      <span class="nx">@buildPermutations</span><span class="p">()</span>
+
+      <span class="k">return</span> <span class="nx">removed</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</code></pre></div>
+<h3 id="2.-think-of-your-ui-in-terms-of-a-tree-of-components">2. Think of your UI in terms of a tree of components</h3>
+
+<p>Look at your design. Look at your markup. Do you see any patterns? These parts of our UI are ripe for refactoring into directives.</p>
+
+<p>Imagine being able to compose our view as such:</p>
+<div class="highlight"><pre><code class="jade"><span class="nt">kc-permutation-builder</span>(
+  <span class="na">service =</span> <span class="s">&quot;PermutationBuilderService&quot;</span>
+)
+  <span class="nc">.main</span>
+    <span class="nt">kc-permutable-input</span>(
+      <span class="na">name =</span> <span class="s">&quot;name&quot;</span>
+      <span class="na">type =</span> <span class="s">&quot;text&quot;</span>
+      <span class="na">required</span>
+    ) Name
+
+    <span class="nt">kc-permutable-input</span>(
+      <span class="na">name =</span> <span class="s">&quot;description&quot;</span>
+      <span class="na">type =</span> <span class="s">&quot;text&quot;</span>
+    ) Description
+
+  <span class="nc">.sidebar</span>
+    <span class="nt">kc-permutable-attribute</span>(
+      <span class="na">name =</span> <span class="s">&quot;name&quot;</span>
+    ) Name
+
+    <span class="nt">kc-permutable-attribute</span>(
+      <span class="na">name =</span> <span class="s">&quot;description&quot;</span>
+    ) Description
+
+    <span class="nt">button</span>(
+      <span class="na">type =</span> <span class="s">&quot;submit&quot;</span>
+      <span class="na">ng-click =</span> <span class="s">&quot;submit()&quot;</span>
+    ) Create Permutations
+</code></pre></div>
+<p>That&#39;s a lot more succinct, expressive, and reusable.</p>
+
+<p><a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/permutation/directive/permutation-builder-directive.coffee">permutation-builder-directive.coffee</a></p>
+<div class="highlight"><pre><code class="coffeescript"><span class="cm">###</span>
+<span class="cm">@name kcPermutationBuilder</span>
+<span class="cm">@description</span>
+<span class="cm">This serves as a way to bind an instance of a PermutationBuilderService and</span>
+<span class="cm">expose its API to a group of `kcPermutableInput` directives.</span>
+
+<span class="cm">Even though it has an isolate scope, it doesn&#39;t have any template, so it doesn&#39;t</span>
+<span class="cm">introduce an isolate scope in the template in which its used.</span>
+
+<span class="cm">@param {PermutationBuilderService} service - Or a subclass thereof</span>
+<span class="cm">###</span>
+
+<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span> <span class="s">&#39;app.permutation&#39;</span>
+<span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;kcPermutationBuilder&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
+  <span class="nv">controller: </span><span class="s">&#39;KcPermutationBuilderController&#39;</span>
+  <span class="nv">scope:</span>
+    <span class="nv">service: </span><span class="s">&#39;=&#39;</span>
+
+<span class="p">.</span><span class="nx">controller</span> <span class="s">&#39;KcPermutationBuilderController&#39;</span><span class="p">,</span> <span class="nf">(</span>
+<span class="nf">  $scope</span>
+<span class="nf">) -&gt;</span>
+  <span class="vi">@permutable_attributes = </span><span class="nx">$scope</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">permutable_attributes</span>
+
+  <span class="vi">@addAttribute =</span>
+    <span class="nx">angular</span><span class="p">.</span><span class="nx">bind</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">service</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">addAttribute</span>
+
+  <span class="vi">@removeAttribute =</span>
+    <span class="nx">angular</span><span class="p">.</span><span class="nx">bind</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">service</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">service</span><span class="p">.</span><span class="nx">removeAttribute</span>
+</code></pre></div>
+<p><a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/permutation/directive/permutable-input-directive.coffee">permutable-input-directive.coffee</a></p>
+<div class="highlight"><pre><code class="coffeescript"><span class="cm">###</span>
+<span class="cm">@name kcPermutableInput</span>
+<span class="cm">@description</span>
+<span class="cm">Encapsulates templating and view logic for a permutable input, which is its</span>
+<span class="cm">own mini form. Makes for a flexible component that can be used to compose the</span>
+<span class="cm">view for any type of permutable resource.</span>
+
+<span class="cm">@param {String} name - Permutable attribute key</span>
+
+<span class="cm">@example</span>
+<span class="cm">`kc-permutable-input(name=&quot;title&quot;, type=&quot;text&quot;, required) Label`</span>
+<span class="cm">###</span>
+
+<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span> <span class="s">&#39;app.permutation&#39;</span>
+<span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;kcPermutableInput&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+  <span class="nv">require: </span><span class="s">&#39;^kcPermutationBuilder&#39;</span>
+  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
+  <span class="nv">templateUrl: </span><span class="s">&#39;/permutation/_permutable-input.html&#39;</span>
+  <span class="nv">transclude: </span><span class="kc">true</span>
+
+  <span class="nv">scope:</span>
+    <span class="nv">name: </span><span class="s">&#39;@name&#39;</span>
+
+  <span class="nv">link: </span><span class="nf">(scope, element, attrs, kcPermutationBuilder) -&gt;</span>
+    <span class="c1"># Ensure input IDs are unique</span>
+    <span class="nv">scope.input_id = </span><span class="nx">_</span><span class="p">.</span><span class="nx">uniqueId</span> <span class="s">&#39;permutatable_input_&#39;</span>
+
+    <span class="nv">scope.state =</span>
+      <span class="nv">value: </span><span class="s">&#39;&#39;</span>
+      <span class="nv">is_required: </span><span class="nx">attrs</span><span class="p">.</span><span class="nx">required</span><span class="o">?</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name isDisabled</span>
+<span class="cm">    @description</span>
+<span class="cm">    We don&#39;t want the submit button to be enabled if input is empty.</span>
+
+<span class="cm">    @returns {Boolean}</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">scope.isDisabled = </span><span class="nf">-&gt;</span>
+      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isEmpty</span> <span class="nx">scope</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">value</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name isRequired</span>
+<span class="cm">    @description</span>
+<span class="cm">    An input is no longer required if at least 1 value has already been entered.</span>
+
+<span class="cm">    @returns {Boolean}</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">scope.isRequired = </span><span class="nf">-&gt;</span>
+      <span class="k">return</span> <span class="nx">attrs</span><span class="p">.</span><span class="nx">required</span><span class="o">?</span> <span class="o">and</span>
+        <span class="nx">kcPermutationBuilder</span><span class="p">.</span><span class="nx">permutable_attributes</span><span class="p">[</span><span class="nx">scope</span><span class="p">.</span><span class="nx">name</span><span class="p">].</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">0</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name submit</span>
+<span class="cm">    @description</span>
+<span class="cm">    Adds attribute and clears the input.</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">scope.submit = </span><span class="nf">-&gt;</span>
+      <span class="nv">is_added = </span><span class="nx">kcPermutationBuilder</span><span class="p">.</span><span class="nx">addAttribute</span><span class="p">(</span>
+        <span class="nx">scope</span><span class="p">.</span><span class="nx">name</span>
+        <span class="nx">scope</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">value</span>
+      <span class="p">)</span>
+
+      <span class="k">if</span> <span class="nx">is_added</span>
+        <span class="nv">scope.state.value = </span><span class="s">&#39;&#39;</span>
+</code></pre></div>
+<p><a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/permutation/_permutable-input.jade">_permutable-input.jade</a></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='jade'><span class='line'><span class="err">&lt;</span><span class="nt">br</span>&gt;
+</span><span class='line'><span class="err">&lt;</span><span class="nt">br</span>&gt;
+</span><span class='line'><span class="nt">form</span><span class="nc">.form-group</span>(<span class="err">&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>  <span class="na">ng-submit =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">submit</span><span class="err">(</span>)&amp;quot;&lt;br&gt;
+</span><span class='line'>  <span class="nt">name</span> = &amp;quot;form&amp;quot;&lt;br&gt;
+</span><span class='line'>  <span class="nt">ng-class</span> = &amp;quot;{ &amp;#39;has-error&amp;#39;: form.$invalid &amp;amp;&amp;amp; form.value.$touched }&amp;quot;&lt;br&gt;
+</span><span class='line'><span class="err">)&lt;</span><span class="nt">br</span>&gt;
+</span><span class='line'>  <span class="nt">label</span><span class="nc">.control-label</span>(<span class="err">&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>    <span class="na">for =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;{{</span><span class="na">input_id</span><span class="err">}}&amp;</span><span class="na">quot</span><span class="err">;&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>  )&lt;br&gt;
+</span><span class='line'>    <span class="nt">span</span>(<span class="na">ng-transclude</span>)&lt;br&gt;
+</span><span class='line'>    <span class="nt">span</span>(<span class="na">ng-if=</span><span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">state</span><span class="err">.</span><span class="na">is_required</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>) *&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span>&gt;.input-group&lt;br&gt;
+</span><span class='line'>    <span class="nt">input</span><span class="nc">.form-control</span>(<span class="err">&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>      <span class="na">id =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;{{</span><span class="na">input_id</span><span class="err">}}&amp;</span><span class="na">quot</span><span class="err">;&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>      <span class="na">name =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">value</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>      <span class="na">type =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">text</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>      <span class="na">ng-model =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">state</span><span class="err">.</span><span class="na">value</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>      <span class="na">ng-required =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">isRequired</span><span class="err">(</span>)&amp;quot;&lt;br&gt;
+</span><span class='line'>    <span class="err">)&lt;</span><span class="c">/p&gt;</span>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">div</span> class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;.input-group-btn
+</span><span class='line'>  <span class="nt">button</span><span class="nc">.btn.btn-default</span>(
+</span><span class='line'>    <span class="na">type =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">submit</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>    <span class="na">ng-disabled =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">isDisabled</span><span class="err">(</span>)&amp;quot;
+</span><span class='line'>  <span class="err">) </span><span class="nt">Add</span>
+</span><span class='line'><span class="err">&lt;</span><span class="c">/code&gt;&lt;/pre&gt;&lt;/div&gt;</span>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span>&gt;&lt;br&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/permutation/directive/permutable-attribute-directive.coffee">permutable-attribute-directive.coffee</a></p>
+<div class="highlight"><pre><code class="coffeescript"><span class="cm">###</span>
+<span class="cm">@name kcPermutableAttribute</span>
+<span class="cm">@description</span>
+<span class="cm">Displays the values entered for a permutable attribute.</span>
+<span class="cm">Allows user to remove a value.</span>
+
+<span class="cm">@param {String} name - Permutable attribute key</span>
+
+<span class="cm">@example</span>
+<span class="cm">kc-permutable-attribute(</span>
+<span class="cm">  name=&quot;description&quot;</span>
+<span class="cm">) Description</span>
+<span class="cm">###</span>
+
+<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span> <span class="s">&#39;app.permutation&#39;</span>
+<span class="p">.</span><span class="nx">directive</span> <span class="s">&#39;kcPermutableAttribute&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+  <span class="nv">require: </span><span class="s">&#39;^kcPermutationBuilder&#39;</span>
+  <span class="nv">restrict: </span><span class="s">&#39;E&#39;</span>
+  <span class="nv">templateUrl: </span><span class="s">&#39;/permutation/_permutable-attribute.html&#39;</span>
+  <span class="nv">transclude: </span><span class="kc">true</span>
+
+  <span class="nv">scope:</span>
+    <span class="nv">name: </span><span class="s">&#39;@name&#39;</span>
+
+  <span class="nv">link: </span><span class="nf">(scope, element, attrs, kcPermutationBuilder) -&gt;</span>
+    <span class="nv">scope.permutable_attribute =</span>
+      <span class="nx">kcPermutationBuilder</span><span class="p">.</span><span class="nx">permutable_attributes</span><span class="p">[</span><span class="nx">scope</span><span class="p">.</span><span class="nx">name</span><span class="p">]</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name removeAttribute</span>
+<span class="cm">    @description</span>
+<span class="cm">    Calls on service to remove attribute.</span>
+
+<span class="cm">    @param {Integer} index - Value&#39;s index in the permutable attribute array.</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">scope.removeAttribute = </span><span class="nf">(index) -&gt;</span>
+      <span class="nx">kcPermutationBuilder</span><span class="p">.</span><span class="nx">removeAttribute</span> <span class="nx">scope</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="nx">index</span>
+</code></pre></div>
+<p><a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/permutation/_permutable-attribute.jade">_permutable-attribute.jade</a></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='jade'><span class='line'><span class="err">&lt;</span><span class="nt">br</span>&gt;
+</span><span class='line'><span class="err">&lt;</span><span class="nt">br</span>&gt;
+</span><span class='line'><span class="nc">.panel.panel-default</span>&lt;br&gt;
+</span><span class='line'>  <span class="nc">.panel-heading</span>&lt;br&gt;
+</span><span class='line'>    <span class="nt">strong</span>(<span class="na">ng-transclude</span>)&lt;br&gt;
+</span><span class='line'>    <span class="nt">strong</span> &amp;nbsp;({{permutable_attribute.length}})&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span>&gt;ul.list-group&lt;br&gt;
+</span><span class='line'>    <span class="nt">li</span><span class="nc">.list-group-item</span>(<span class="err">&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>      <span class="na">ng-repeat =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">attribute</span> <span class="na">in</span> <span class="na">permutable_attribute</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>    )&lt;br&gt;
+</span><span class='line'>      <span class="nt">span</span> {{attribute}}&lt;br&gt;
+</span><span class='line'>      <span class="nt">button</span><span class="nc">.btn.close</span>(<span class="err">&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>        <span class="na">ng-click =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">removeAttribute</span><span class="err">($</span><span class="na">index</span>)&amp;quot;&lt;br&gt;
+</span><span class='line'>      <span class="err">) &amp;</span><span class="nt">times</span>;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span>&gt;&lt;br&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2 id="the-new-and-improved-widget-builder">The New and Improved Widget Builder</h2>
+
+<p>Now with the abstracted modules ready for use, look at how much leaner all of our widget-specific code is.</p>
+
+<p><a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/widget/service/widget-builder-service.coffee">widget-builder-service.coffee</a></p>
+<div class="highlight"><pre><code class="coffeescript"><span class="cm">###</span>
+<span class="cm">@name WidgetBuilderService</span>
+<span class="cm">@description</span>
+<span class="cm">Extends PermutationBuilderService for use with widgets.</span>
+<span class="cm">Drives the business logic of the widget builder UI flow.</span>
+
+<span class="cm">NOTE: injection returns an instance, not the constructor (see end of file).</span>
+<span class="cm">###</span>
+
+<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span> <span class="s">&#39;app.widget&#39;</span>
+<span class="p">.</span><span class="nx">factory</span> <span class="s">&#39;WidgetBuilderService&#39;</span><span class="p">,</span> <span class="nf">(</span>
+<span class="nf">  PermutationBuilderService</span>
+<span class="nf">  widgetFactory</span>
+<span class="nf">  widgetStore</span>
+<span class="nf">  $q</span>
+<span class="nf">) -&gt;</span>
+  <span class="k">class</span> <span class="nx">WidgetBuilderService</span> <span class="k">extends</span> <span class="nx">PermutationBuilderService</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name initialize</span>
+<span class="cm">    @description</span>
+<span class="cm">    Defines permutable attributes for widgets.</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+      <span class="k">super</span>
+
+      <span class="vi">@permutable_attributes =</span>
+        <span class="nv">name: </span><span class="p">[]</span>
+        <span class="nv">description: </span><span class="p">[]</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name buildPermutations</span>
+<span class="cm">    @description</span>
+<span class="cm">    Here, we extend the base method to ensure that we only build valid widgets.</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">buildPermutations: </span><span class="nf">-&gt;</span>
+      <span class="k">super</span>
+
+      <span class="vi">@permutations = </span><span class="nx">_</span><span class="p">.</span><span class="nx">filter</span> <span class="nx">@permutations</span><span class="p">,</span> <span class="nx">widgetFactory</span><span class="p">.</span><span class="nx">validate</span>
+
+    <span class="cm">###</span>
+<span class="cm">    @name createPermutations</span>
+<span class="cm">    @description</span>
+<span class="cm">    Specifies how a permutation gets persisted.</span>
+
+<span class="cm">    @returns {Promise} - Fulfilled with the newly created permutations.</span>
+<span class="cm">    ###</span>
+
+    <span class="nv">createPermutations: </span><span class="nf">-&gt;</span>
+      <span class="c1"># Grab the permutations before we empty them</span>
+      <span class="nv">permutations = </span><span class="nx">@permutations</span>
+
+      <span class="c1"># Implement your AJAX call here</span>
+      <span class="nx">widgetStore</span><span class="p">.</span><span class="nx">addWidgets</span> <span class="nx">permutations</span>
+
+      <span class="c1"># Reset our service</span>
+      <span class="nx">@initialize</span><span class="p">()</span>
+
+      <span class="k">return</span> <span class="nx">$q</span><span class="p">.</span><span class="nx">when</span> <span class="nx">permutations</span>
+
+  <span class="k">return</span> <span class="k">new</span> <span class="nx">WidgetBuilderService</span><span class="p">()</span>
+</code></pre></div>
+<p><a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/widget/controller/widget-builder-controller.coffee">widget-builder-controller.coffee</a></p>
+<div class="highlight"><pre><code class="coffeescript"><span class="cm">###</span>
+<span class="cm">@name WidgetBuilderController</span>
+<span class="cm">@description</span>
+<span class="cm">Our controller and its template become a very thin layer that</span>
+<span class="cm">glue the pieces together.</span>
+<span class="cm">###</span>
+
+<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span> <span class="s">&#39;app.widget&#39;</span>
+<span class="p">.</span><span class="nx">controller</span> <span class="s">&#39;WidgetBuilderController&#39;</span><span class="p">,</span> <span class="nf">(</span>
+<span class="nf">  $scope</span>
+<span class="nf">  $state</span>
+<span class="nf">  WidgetBuilderService</span>
+<span class="nf">) -&gt;</span>
+  <span class="nv">$scope.WidgetBuilderService = </span><span class="nx">WidgetBuilderService</span>
+
+  <span class="cm">###</span>
+<span class="cm">  @name submit</span>
+<span class="cm">  @description</span>
+<span class="cm">  Calls on the service to create permutations, then redirects to home page.</span>
+<span class="cm">  ###</span>
+
+  <span class="nv">$scope.submit = </span><span class="nf">-&gt;</span>
+    <span class="nx">WidgetBuilderService</span><span class="p">.</span><span class="nx">createPermutations</span><span class="p">().</span><span class="nx">then</span> <span class="nf">(widgets) -&gt;</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&#39;look at all these widgets we built!&#39;</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">table</span> <span class="nx">widgets</span>
+
+      <span class="nx">$state</span><span class="p">.</span><span class="nx">go</span> <span class="s">&#39;home&#39;</span>
+</code></pre></div>
+<p><a href="https://github.com/kvcrawford/ng-permutation-builder/blob/master/src/widget/widget-builder.jade">widget-builder.jade</a></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+</pre></td><td class='code'><pre><code class='jade'><span class='line'><span class="err">&lt;</span><span class="nt">br</span>&gt;
+</span><span class='line'><span class="err">&lt;</span><span class="nt">br</span>&gt;
+</span><span class='line'><span class="nc">.container-fluid</span>&lt;br&gt;
+</span><span class='line'>  <span class="nc">.row</span>&lt;br&gt;
+</span><span class='line'>    <span class="nc">.col-md-12</span>&lt;br&gt;
+</span><span class='line'>      <span class="nt">p</span><span class="nc">.lead</span> Let&amp;#39;s build some widgets.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span>&gt;kc-permutation-builder(&lt;br&gt;
+</span><span class='line'>    <span class="nt">service</span> = &amp;quot;WidgetBuilderService&amp;quot;&lt;br&gt;
+</span><span class='line'>  <span class="err">)&lt;</span><span class="nt">br</span>&gt;
+</span><span class='line'>    <span class="nc">.row</span>&lt;br&gt;
+</span><span class='line'>      <span class="nc">.col-lg-6.col-md-8.col-sm-6</span>&lt;br&gt;
+</span><span class='line'>          <span class="nt">kc-permutable-input</span>(<span class="err">&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>            <span class="na">name =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">name</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>            <span class="na">type =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">text</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>            <span class="na">required</span><span class="err">&lt;</span><span class="na">br</span><span class="err">&gt;</span>
+</span><span class='line'>          ) Name&lt;/p&gt;
+</span><span class='line'><span class="err">&lt;</span><span class="nt">div</span> class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;      kc-permutable-input(
+</span><span class='line'>        <span class="nt">name</span> = &amp;quot;description&amp;quot;
+</span><span class='line'>        <span class="nt">type</span> = &amp;quot;text&amp;quot;
+</span><span class='line'>      <span class="err">) </span><span class="nt">Description</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nc">.col-lg-4.col-md-4.col-sm-6</span>
+</span><span class='line'>    <span class="nc">.panel.panel-default</span>
+</span><span class='line'>      <span class="nc">.panel-heading</span>
+</span><span class='line'>        <span class="nt">h4</span><span class="nc">.panel-title</span> {{WidgetBuilderService.permutations.length}} Widgets Built
+</span><span class='line'>
+</span><span class='line'>      <span class="nc">.panel-body</span>
+</span><span class='line'>        <span class="nt">kc-permutable-attribute</span>(
+</span><span class='line'>          <span class="na">name =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">name</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>        ) Name
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">kc-permutable-attribute</span>(
+</span><span class='line'>          <span class="na">name =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">description</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>        ) Description
+</span><span class='line'>
+</span><span class='line'>      <span class="nc">.panel-footer</span>
+</span><span class='line'>        <span class="nc">.btn-group</span>
+</span><span class='line'>          <span class="nt">button</span><span class="nc">.btn.btn-primary</span>(
+</span><span class='line'>            <span class="na">type =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">button</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>            <span class="na">ng-click =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">submit</span><span class="err">(</span>)&amp;quot;
+</span><span class='line'>            <span class="nt">ng-disabled</span> = &amp;quot;WidgetBuilderService.permutations.length === 0&amp;quot;
+</span><span class='line'>          <span class="err">) </span><span class="nt">Submit</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="nt">button</span><span class="nc">.btn.btn-default</span>(
+</span><span class='line'>            <span class="na">type =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">button</span><span class="err">&amp;</span><span class="na">quot</span><span class="err">;</span>
+</span><span class='line'>            <span class="na">ng-click =</span> <span class="err">&amp;</span><span class="nv">quot</span><span class="err">;</span><span class="na">WidgetBuilderService</span><span class="err">.</span><span class="na">initialize</span><span class="err">(</span>)&amp;quot;
+</span><span class='line'>            <span class="nt">ng-disabled</span> = &amp;quot;WidgetBuilderService.permutations.length === 0&amp;quot;
+</span><span class='line'>          <span class="err">) </span><span class="nt">Reset</span>
+</span><span class='line'><span class="err">&lt;</span><span class="c">/code&gt;&lt;/pre&gt;&lt;/div&gt;</span>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span>&gt;&lt;br&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2 id="going-forward">Going Forward</h2>
+
+<p>Now, it&#39;s trivial to implement a permutation builder for <em>Gadgets</em>. Or, say we wanted to support permutations of images? The surface area for changes needed is minimal: we just need a new <code>kcPermutableImage</code> directive, and the rest would work pretty much as-is.</p>
+
+<p>Neat, huh?</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Introducing: ng-coffeeplate]]></title>
