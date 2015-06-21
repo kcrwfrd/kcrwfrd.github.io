@@ -48,22 +48,3 @@ In an effort to make our lives easier at Gunn/Jerkens, [@apkostka](http://github
 * Installs WordPress
 
 I can attest that it has, in fact, made our lives easier.
-
-## MoodApp
-#### https://github.com/kvcrawford/moodapp
-
-_MoodApp_ is a mood-tracking app designed to help users correlate their mood with their lifestyle, to help them establish the habits that will lead to their happiness. Expanding on that, it prompts the user to _"say something positive,"_ a [positive psychology](http://en.wikipedia.org/wiki/Positive_psychology) technique intended to help improve affect. The genesis of the idea for the app centered around this key feature, which differentiates it from other mood trackers on the market. It was inspired by [Shawn Achor's](http://en.wikipedia.org/wiki/Shawn_Achor) [TED talk on the subject](http://www.ted.com/talks/shawn_achor_the_happy_secret_to_better_work.html).
-
-In the early stages of development, it is being built on a Node.js + Express + MongoDB software stack. As a passion project developed in our spare time, my co-developer [@apkostka](https://github.com/apkostka) and I play equal parts as visionaries, designers, and engineers.
-
-## Miscellaneous Bits and Pieces
-#### http://github.com/kvcrawford
-
-I love learning and experimenting with technology, evidence of which can be seen on my [Github profile](https://github.com/kvcrawford). Some examples include:
-
-* My [dotfiles](https://github.com/kvcrawford/dotfiles)
-* A little [blog](https://github.com/kvcrawford/nodeblog) powered by Node.js, Express, and MongoDB (okay okay, it's totally unfinished, but it scratched my itch to learn)
-* A RoR [Twitter Clone](https://github.com/kvcrawford/SampleApp), courtesy of guidance from [RailsTutorial.org](http://ruby.railstutorial.org) (in progress)
-* [Project Euler](http://projecteuler.net/profile/kvcrawford.png)
-* Toying with my [linode](http://kvcrawford.com/) server
-* And more! Just [ask me](https://twitter.com/kvcrawford "@kvcrawford on Twitter") and let's nerd out together
